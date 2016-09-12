@@ -55,6 +55,8 @@ class knight(classes):
   classType = "Knight"
   armour = 10
   maxArmour = armour
+  startX = 0
+  startWidth = 0
 
   def __init__(self,name):
     self.init(name)
@@ -62,8 +64,51 @@ class knight(classes):
   #hit all frontal entities with your sword
   #medium physical damage, small knockback
   #medium stamina consumption
-  def hit(self):
-    pass
+  def swing(self,act,playerObject,playerEntity,enemyObject,attack,windowWidth):
+    if act == 0:
+      playerObject.changeState("swing")
+      playerImage = pygame.image.load("graphics/player/swing/0.PNG")
+      self.startX = playerObject.x
+      self.startWidth = playerImage.get_width()
+      if playerObject.face == "r":
+        self.startX += self.startWidth
+##      else:
+##        enemyImage = pygame.image.load("graphics/troll/swing/1.PNG")
+##        enemyObject.x = self.startX - (enemyImage.get_width() - self.startWidth)
+    else:
+##      if attack[1] <= self.distance <= attack[2]:
+      hit = 0
+      playerImage = pygame.image.load("graphics/player/swing/" + str(playerObject.current) + ".PNG")
+      enemyImage = pygame.image.load("graphics/troll/swing/" + str(enemyObject.current) + ".PNG")
+      if playerObject.face == "l":
+        if self.startX > enemyObject.x + enemyImage.get_width() > playerObject.x or self.startX > enemyObject.x > playerObject.x or enemyObject.x + enemyImage.get_width() > playerObject.x > enemyObject.x:
+          hit = 1
+##        print("UPDATE##############################")
+        playerObject.x = self.startX - (playerImage.get_width() - self.startWidth)
+##        print("startX",self.startX)
+##        print("width",playerImage.get_width())
+##        print("startWidth",self.startWidth)
+##        print("difference",playerImage.get_width() - self.startWidth)
+##        print("final",self.startX - (playerImage.get_width() - self.startWidth),"\n")
+      else:
+        if self.startX < enemyObject.x < playerObject.x + enemyImage.get_width() or self.startX < enemyObject.x + enemyImage.get_width() < playerObject.x or enemyObject.x < playerObject.x + enemyImage.get_width() < enemyObject.x + enemyImage.get_width():
+          hit = 1
+      if hit == 1:
+        damage(playerObject,enemyObject,enemyEntity, "physical", (2 * self.level + random.randint(-self.level,self.level)))
+        enemyObject.changeState("knockback")
+        enemyObject.knockbackDistance = round(windowWidth/4)
+        enemyObject.knockbackDistanceMax = enemyObject.knockbackDistance
+        enemyObject.knockbackFace = playerObject.face
+    if playerObject.current == playerObject.totalStates - 1:
+      playerObject.changeState("stand")
+      self.attackDelay = self.attackDelayMax
+      if playerObject.face == "l":
+        playerObject.x = self.startX
+      else:
+        playerObject.x = self.startX - self.startWidth
+
+  attacks = [[swing,0,220]]
+  attackNames = ["swing"]
 
   #hit all frontal entities with your shield
   #low physical damage, large knockback
@@ -207,13 +252,13 @@ class troll(enemy):
       if enemyObject.face == "l":
         if self.startX > playerObject.x + playerImage.get_width() > enemyObject.x or self.startX > playerObject.x > enemyObject.x or playerObject.x + playerImage.get_width() > enemyObject.x > playerObject.x:
           hit = 1
-        print("UPDATE##############################")
+##        print("UPDATE##############################")
         enemyObject.x = self.startX - (enemyImage.get_width() - self.startWidth)
-        print("startX",self.startX)
-        print("width",enemyImage.get_width())
-        print("startWidth",self.startWidth)
-        print("difference",enemyImage.get_width() - self.startWidth)
-        print("final",self.startX - (enemyImage.get_width() - self.startWidth),"\n")
+##        print("startX",self.startX)
+##        print("width",enemyImage.get_width())
+##        print("startWidth",self.startWidth)
+##        print("difference",enemyImage.get_width() - self.startWidth)
+##        print("final",self.startX - (enemyImage.get_width() - self.startWidth),"\n")
       else:
         if self.startX < playerObject.x < enemyObject.x + enemyImage.get_width() or self.startX < playerObject.x + playerImage.get_width() < enemyObject.x or playerObject.x < enemyObject.x + enemyImage.get_width() < playerObject.x + playerImage.get_width():
           hit = 1
