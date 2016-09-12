@@ -33,7 +33,7 @@ pygame.display.set_caption("RPG Game")
 
 #Initialize game clock
 gameClock = pygame.time.Clock()
-FPS = 1
+FPS = 10
 
 #Start game loop
 def gameLoop():
@@ -122,6 +122,10 @@ def gameLoop():
             playerObject.changeState("walk")
           else:
             playerObject.jumpWalk = [True,"r"]
+        elif event.key == 257:
+          if not playerObject.state in ["jump","drop","knockback"]:
+            playerObject.changeState("swing")
+            key == "KP1"
         if event.key == pygame.K_SPACE and playerObject.state in ["walk","stand"]:
           playerObject.changeState("jump")
           if key == "a":
