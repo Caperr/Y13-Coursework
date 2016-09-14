@@ -123,8 +123,9 @@ def gameLoop():
           else:
             playerObject.jumpWalk = [True,"r"]
         elif event.key == 257:
-          if not playerObject.state in ["jump","drop","knockback"]:
-            playerObject.changeState("swing")
+          if not playerObject.state in ["jump","drop","knockback",playerEntity.attackNames[0]]:
+            print("to_swing")
+            playerObject.changeState("to_swing")
             key == "KP1"
         if event.key == pygame.K_SPACE and playerObject.state in ["walk","stand"]:
           playerObject.changeState("jump")
@@ -301,6 +302,8 @@ def gameLoop():
             if currentObject.name == currentEntity.name:
               if currentObject.name != "player":
                   currentEntity.attack(playerObject,playerEntity,currentObject,windowWidth)
+              else:
+                if 
         
 
 

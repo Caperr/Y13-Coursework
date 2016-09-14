@@ -36,6 +36,20 @@ class classes():
   speed = 20
   #Player jump height
   jumpHeight = 100
+  #temporary variables for use in animation
+  startX = 0
+  startWidth = 0
+
+  def attack(self,playerObject,playerEntity,enemyObject,windowWidth):
+    if not playerObject.state in self.attackNames:
+      if enemyObject.x > playerObject.x:
+        self.distance = enemyObject.x - playerObject.x
+      else:
+        self.distance = playerObject.x - enemyObject.x
+      attack[0](self,0,playerObject,playerEntity,enemyObject,attack,windowWidth)
+      self.currentAttack = attack
+    else:
+      self.currentAttack[0](self,1,playerObject,playerEntity,enemyObject,self.currentAttack,windowWidth)
 
   #initialize player
   def init(self,name):
@@ -64,7 +78,7 @@ class knight(classes):
   #hit all frontal entities with your sword
   #medium physical damage, small knockback
   #medium stamina consumption
-  def swing(self,act,playerObject,playerEntity,enemyObject,attack,windowWidth):
+  def swing(self,act,  ):
     if act == 0:
       playerObject.changeState("swing")
       playerImage = pygame.image.load("graphics/player/swing/0.PNG")
@@ -174,6 +188,9 @@ class enemy():
   currentAttack = "none"
   #current distance from the player
   distance = 0
+  #temporary variables for use in animation
+  startX = 0
+  startWidth = 0
 
   #same as player dodge
   def dodge(self):
@@ -224,9 +241,6 @@ class troll(enemy):
   maxArmour = armour
   attackDelay = 0
   attackDelayMax = 50
-  #temporary variables for use in swing
-  startX = 0
-  startWidth = 0
   
   #set base health
   def getHealth(self):
