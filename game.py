@@ -39,17 +39,15 @@ class classes():
   #temporary variables for use in animation
   startX = 0
   startWidth = 0
+  #current move being run
+  currentAttack = []
 
-  def attack(self,playerObject,playerEntity,enemyObject,windowWidth):
+  def attack(self,playerObject,playerEntity,windowWidth,move):
     if not playerObject.state in self.attackNames:
-      if enemyObject.x > playerObject.x:
-        self.distance = enemyObject.x - playerObject.x
-      else:
-        self.distance = playerObject.x - enemyObject.x
-      attack[0](self,0,playerObject,playerEntity,enemyObject,attack,windowWidth)
-      self.currentAttack = attack
+      self.attacks[move][0](self,0,playerObject,playerEntity,windowWidth)
+      self.currentAttack = self.attacks[move]
     else:
-      self.currentAttack[0](self,1,playerObject,playerEntity,enemyObject,self.currentAttack,windowWidth)
+      self.currentAttack[0](self,1,playerObject,playerEntity,windowWidth)
 
   #initialize player
   def init(self,name):
@@ -78,7 +76,7 @@ class knight(classes):
   #hit all frontal entities with your sword
   #medium physical damage, small knockback
   #medium stamina consumption
-  def swing(self,act,  ):
+  def swing(self,act,playerObject,playerEntity,windowWidth):
     if act == 0:
       playerObject.changeState("swing")
       playerImage = pygame.image.load("graphics/player/swing/0.PNG")
@@ -93,29 +91,31 @@ class knight(classes):
 ##      if attack[1] <= self.distance <= attack[2]:
       hit = 0
       playerImage = pygame.image.load("graphics/player/swing/" + str(playerObject.current) + ".PNG")
-      enemyImage = pygame.image.load("graphics/troll/swing/" + str(enemyObject.current) + ".PNG")
-      if playerObject.face == "l":
-        if self.startX > enemyObject.x + enemyImage.get_width() > playerObject.x or self.startX > enemyObject.x > playerObject.x or enemyObject.x + enemyImage.get_width() > playerObject.x > enemyObject.x:
-          hit = 1
-##        print("UPDATE##############################")
-        playerObject.x = self.startX - (playerImage.get_width() - self.startWidth)
-##        print("startX",self.startX)
-##        print("width",playerImage.get_width())
-##        print("startWidth",self.startWidth)
-##        print("difference",playerImage.get_width() - self.startWidth)
-##        print("final",self.startX - (playerImage.get_width() - self.startWidth),"\n")
-      else:
-        if self.startX < enemyObject.x < playerObject.x + enemyImage.get_width() or self.startX < enemyObject.x + enemyImage.get_width() < playerObject.x or enemyObject.x < playerObject.x + enemyImage.get_width() < enemyObject.x + enemyImage.get_width():
-          hit = 1
-      if hit == 1:
-        damage(playerObject,enemyObject,enemyEntity, "physical", (2 * self.level + random.randint(-self.level,self.level)))
-        enemyObject.changeState("knockback")
-        enemyObject.knockbackDistance = round(windowWidth/4)
-        enemyObject.knockbackDistanceMax = enemyObject.knockbackDistance
-        enemyObject.knockbackFace = playerObject.face
+      for enemyObject in enemies:
+        print(enemyObject)
+        enemyImage = pygame.image.load("graphics/troll/swing/" + str(enemyObject.current) + ".PNG")
+        if playerObject.face == "l":
+          if self.startX > enemyObject.x + enemyImage.get_width() > playerObject.x or self.startX > enemyObject.x > playerObject.x or enemyObject.x + enemyImage.get_width() > playerObject.x > enemyObject.x:
+            hit = 1
+##          print("UPDATE##############################")
+          playerObject.x = self.startX - (playerImage.get_width() - self.startWidth)
+##          print("lmao")
+##          print("startX",self.startX)
+##          print("width",playerImage.get_width())
+##          print("startWidth",self.startWidth)
+##          print("difference",playerImage.get_width() - self.startWidth)
+##          print("final",self.startX - (playerImage.get_width() - self.startWidth),"\n")
+        else:
+          if self.startX < enemyObject.x < playerObject.x + enemyImage.get_width() or self.startX < enemyObject.x + enemyImage.get_width() < playerObject.x or enemyObject.x < playerObject.x + enemyImage.get_width() < enemyObject.x + enemyImage.get_width():
+            hit = 1
+        if hit == 1:
+          damage(playerObject,enemyObject,enemyEntity, "physical", (2 * self.level + random.randint(-self.level,self.level)))
+          enemyObject.changeState("knockback")
+          enemyObject.knockbackDistance = round(windowWidth/4)
+          enemyObject.knockbackDistanceMax = enemyObject.knockbackDistance
+          enemyObject.knockbackFace = playerObject.face
     if playerObject.current == playerObject.totalStates - 1:
       playerObject.changeState("stand")
-      self.attackDelay = self.attackDelayMax
       if playerObject.face == "l":
         playerObject.x = self.startX
       else:
@@ -262,7 +262,7 @@ class troll(enemy):
 ##      if attack[1] <= self.distance <= attack[2]:
       hit = 0
       playerImage = pygame.image.load("graphics/player/" + playerObject.state + "/" + str(playerObject.current) + ".PNG")
-      enemyImage = pygame.image.load("graphics/troll/swing/" + str(enemyObject.current - 1) + ".PNG")
+      enemyImage = pygame.image.load("graphics/troll/swing/" + str(enemyObject.current) + ".PNG")
       if enemyObject.face == "l":
         if self.startX > playerObject.x + playerImage.get_width() > enemyObject.x or self.startX > playerObject.x > enemyObject.x or playerObject.x + playerImage.get_width() > enemyObject.x > playerObject.x:
           hit = 1

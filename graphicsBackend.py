@@ -108,25 +108,27 @@ def gameLoop():
 
       #If a key has been pressed
       elif event.type == pygame.KEYDOWN:
+        disabled = playerObject.state in ["jump","drop,knockback"] and playerObject.state in playerEntity.attackNames
         if event.key == pygame.K_a:
           key = "a"
           playerObject.face = "l"
-          if not playerObject.state in ["jump","drop,knockback"]:
+          if not disabled:
             playerObject.changeState("walk")
           else:
             playerObject.jumpWalk = [True,"l"]
         elif event.key == pygame.K_d:
           key = "d"
           playerObject.face = "r"
-          if not playerObject.state in ["jump","drop,knockback"]:
+          if not disabled:
             playerObject.changeState("walk")
           else:
             playerObject.jumpWalk = [True,"r"]
+            
         elif event.key == 257:
-          if not playerObject.state in ["jump","drop","knockback",playerEntity.attackNames[0]]:
-            print("to_swing")
-            playerObject.changeState("to_swing")
+          if not disabled:
+            playerEntity.attack(playerObject,playerEntity,windowWidth,0)
             key == "KP1"
+            
         if event.key == pygame.K_SPACE and playerObject.state in ["walk","stand"]:
           playerObject.changeState("jump")
           if key == "a":
@@ -302,8 +304,6 @@ def gameLoop():
             if currentObject.name == currentEntity.name:
               if currentObject.name != "player":
                   currentEntity.attack(playerObject,playerEntity,currentObject,windowWidth)
-              else:
-                if 
         
 
 
