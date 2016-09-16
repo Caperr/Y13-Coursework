@@ -60,9 +60,9 @@ def gameLoop():
 ##  sceneObjects.append(player)
 
   enemy1 = game.troll("enemy1")
-  game.enemies.append(enemy1)
+  game.enemyEntities.append(enemy1)
   
-  for enemy in game.enemies:
+  for enemy in game.enemyEntities:
     entities.append(enemy)
 ##  for currentObject in sceneObjects:
 ##    if currentObject.objectType == "entity":
@@ -71,6 +71,8 @@ def gameLoop():
   for currentObject in sceneObjects:
     if currentObject.name == "player":
       playerObject = currentObject
+    elif currentObject.name[0:5] == "enemy":
+      game.enemyObjects.append(currentObject)
   for currentEntity in entities:
     if currentEntity.name == "player":
       playerEntity = currentEntity
@@ -78,11 +80,8 @@ def gameLoop():
   #While the game is not quitting...
   while not gameQuit:
 
-##    for currentObject in sceneObjects:
-##      for currentEntity in entities:
-##        if currentObject.name == currentEntity.name:
-##          if currentObject.name != "player":
-##              currentEntity.attack(playerObject,playerEntity,currentObject,windowWidth)
+    if playerObject.state in playerEntity.attackNames:
+      playerEntity.attack(playerObject,playerEntity,windowWidth,0)
     
 ##    print(entities)
 ##    print(sceneObjects)
@@ -281,9 +280,9 @@ def gameLoop():
                 currentObject.x += currentEntity.speed
             #jumping
             if currentObject.state == "jump":
-  ##              maxheight = floor - image.get_height() - currentEntity.jumpHeight
-  ##              print("max",floor - image.get_height() - currentEntity.jumpHeight)
-  ##              print("y",currentObject.y)
+##                maxheight = floor - image.get_height() - currentEntity.jumpHeight
+##                print("max",floor - image.get_height() - currentEntity.jumpHeight)
+##              print("y",currentObject.y)
               #if the entity is below the jump height
               if currentObject.y > floor - image.get_height() - currentEntity.jumpHeight:
                 #if the difference between the entity and the jump height is 15 or more
@@ -302,7 +301,7 @@ def gameLoop():
         for currentObject in sceneObjects:
           for currentEntity in entities:
             if currentObject.name == currentEntity.name:
-              if currentObject.name != "player":
+              if currentObject.name != "player" and not currentObject.state in ["jump","drop,knockback"]:
                   currentEntity.attack(playerObject,playerEntity,currentObject,windowWidth)
         
 

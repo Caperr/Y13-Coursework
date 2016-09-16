@@ -5,7 +5,8 @@ import pygame
 import objects
 
 #list of all enemy instances
-enemies = []
+enemyObjects = []
+enemyEntities = []
 
 def damage(giverObject, recieverObject, recieverEntity, damType, amount):
   print(giverObject.name,"dealt",amount,damType,"damage to",recieverObject.name)
@@ -41,6 +42,8 @@ class classes():
   startWidth = 0
   #current move being run
   currentAttack = []
+  #level
+  level = 1
 
   def attack(self,playerObject,playerEntity,windowWidth,move):
     if not playerObject.state in self.attackNames:
@@ -84,36 +87,26 @@ class knight(classes):
       self.startWidth = playerImage.get_width()
       if playerObject.face == "r":
         self.startX += self.startWidth
-##      else:
-##        enemyImage = pygame.image.load("graphics/troll/swing/1.PNG")
-##        enemyObject.x = self.startX - (enemyImage.get_width() - self.startWidth)
     else:
-##      if attack[1] <= self.distance <= attack[2]:
       hit = 0
       playerImage = pygame.image.load("graphics/player/swing/" + str(playerObject.current) + ".PNG")
-      for enemyObject in enemies:
-        print(enemyObject)
-        enemyImage = pygame.image.load("graphics/troll/swing/" + str(enemyObject.current) + ".PNG")
-        if playerObject.face == "l":
-          if self.startX > enemyObject.x + enemyImage.get_width() > playerObject.x or self.startX > enemyObject.x > playerObject.x or enemyObject.x + enemyImage.get_width() > playerObject.x > enemyObject.x:
-            hit = 1
-##          print("UPDATE##############################")
-          playerObject.x = self.startX - (playerImage.get_width() - self.startWidth)
-##          print("lmao")
-##          print("startX",self.startX)
-##          print("width",playerImage.get_width())
-##          print("startWidth",self.startWidth)
-##          print("difference",playerImage.get_width() - self.startWidth)
-##          print("final",self.startX - (playerImage.get_width() - self.startWidth),"\n")
-        else:
-          if self.startX < enemyObject.x < playerObject.x + enemyImage.get_width() or self.startX < enemyObject.x + enemyImage.get_width() < playerObject.x or enemyObject.x < playerObject.x + enemyImage.get_width() < enemyObject.x + enemyImage.get_width():
-            hit = 1
-        if hit == 1:
-          damage(playerObject,enemyObject,enemyEntity, "physical", (2 * self.level + random.randint(-self.level,self.level)))
-          enemyObject.changeState("knockback")
-          enemyObject.knockbackDistance = round(windowWidth/4)
-          enemyObject.knockbackDistanceMax = enemyObject.knockbackDistance
-          enemyObject.knockbackFace = playerObject.face
+      for enemyObject in enemyObjects:
+        for enemyEntity in enemyEntities:
+          if enemyEntity.name == enemyObject.name:
+            enemyImage = pygame.image.load("graphics/troll/swing/" + str(enemyObject.current) + ".PNG")
+            if playerObject.face == "l":
+              if self.startX > enemyObject.x + enemyImage.get_width() > playerObject.x or self.startX > enemyObject.x > playerObject.x or enemyObject.x + enemyImage.get_width() > playerObject.x > enemyObject.x:
+                hit = 1
+              playerObject.x = self.startX - (playerImage.get_width() - self.startWidth)
+            else:
+              if self.startX < enemyObject.x < playerObject.x + playerImage.get_width() or self.startX < enemyObject.x + enemyImage.get_width() < playerObject.x or enemyObject.x < playerObject.x + playerImage.get_width() < enemyObject.x + enemyImage.get_width():
+                hit = 1
+            if hit == 1:
+              damage(playerObject,enemyObject,enemyEntity, "physical", (2 * self.level + random.randint(-self.level,self.level)))
+              enemyObject.changeState("knockback")
+              enemyObject.knockbackDistance = round(windowWidth/4)
+              enemyObject.knockbackDistanceMax = enemyObject.knockbackDistance
+              enemyObject.knockbackFace = playerObject.face
     if playerObject.current == playerObject.totalStates - 1:
       playerObject.changeState("stand")
       if playerObject.face == "l":
