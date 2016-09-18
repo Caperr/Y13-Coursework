@@ -44,13 +44,15 @@ class classes():
   currentAttack = []
   #level
   level = 1
+  #track the progress, in frames, of certain attacks/moves
+  progress = 0
 
   def attack(self,playerObject,playerEntity,windowWidth,move):
     if not playerObject.state in self.attackNames:
-      self.attacks[move][0](self,0,playerObject,playerEntity,windowWidth)
+      self.attacks[move][0](self,True,playerObject,playerEntity,windowWidth)
       self.currentAttack = self.attacks[move]
     else:
-      self.currentAttack[0](self,1,playerObject,playerEntity,windowWidth)
+      self.currentAttack[0](self,False,playerObject,playerEntity,windowWidth)
 
   #initialize player
   def init(self,name):
@@ -79,8 +81,8 @@ class knight(classes):
   #hit all frontal entities with your sword
   #medium physical damage, small knockback
   #medium stamina consumption
-  def swing(self,act,playerObject,playerEntity,windowWidth):
-    if act == 0:
+  def swing(self,firstFrame,playerObject,playerEntity,windowWidth):
+    if firstFrame:
       playerObject.changeState("swing")
       playerImage = pygame.image.load("graphics/player/swing/0.PNG")
       self.startX = playerObject.x
@@ -93,7 +95,7 @@ class knight(classes):
       for enemyObject in enemyObjects:
         for enemyEntity in enemyEntities:
           if enemyEntity.name == enemyObject.name:
-            enemyImage = pygame.image.load("graphics/troll/swing/" + str(enemyObject.current) + ".PNG")
+            enemyImage = pygame.image.load("graphics/troll/" + enemyObject.state + "/" + str(enemyObject.current) + ".PNG")
             if playerObject.face == "l":
               if self.startX > enemyObject.x + enemyImage.get_width() > playerObject.x or self.startX > enemyObject.x > playerObject.x or enemyObject.x + enemyImage.get_width() > playerObject.x > enemyObject.x:
                 hit = 1
@@ -102,7 +104,45 @@ class knight(classes):
               if self.startX < enemyObject.x < playerObject.x + playerImage.get_width() or self.startX < enemyObject.x + enemyImage.get_width() < playerObject.x or enemyObject.x < playerObject.x + playerImage.get_width() < enemyObject.x + enemyImage.get_width():
                 hit = 1
             if hit == 1:
-              damage(playerObject,enemyObject,enemyEntity, "physical", (2 * self.level + random.randint(-self.level,self.level)))
+              damage(playerObject,enemyObject,enemyEntity, "physical", round(2 * self.level + random.randint(-self.level,self.level)))
+              enemyObject.changeState("knockback")
+              enemyObject.knockbackDistance = round(windowWidth/10)
+              enemyObject.knockbackDistanceMax = enemyObject.knockbackDistance
+              enemyObject.knockbackFace = playerObject.face
+    if playerObject.current == playerObject.totalStates - 1:
+      playerObject.changeState("stand")
+      if playerObject.face == "l":
+        playerObject.x = self.startX
+      else:
+        playerObject.x = self.startX - self.startWidth
+
+  #hit all frontal entities with your shield
+  #low physical damage, large knockback
+  #medium stamina consumption
+  def shieldBash(self,firstFrame,playerObject,playerEntity,windowWidth):
+    if firstFrame:
+      playerObject.changeState("shieldBash")
+      playerImage = pygame.image.load("graphics/player/shieldBash/0.PNG")
+      self.startX = playerObject.x
+      self.startWidth = playerImage.get_width()
+      if playerObject.face == "r":
+        self.startX += self.startWidth
+    else:
+      hit = 0
+      playerImage = pygame.image.load("graphics/player/shieldBash/" + str(playerObject.current) + ".PNG")
+      for enemyObject in enemyObjects:
+        for enemyEntity in enemyEntities:
+          if enemyEntity.name == enemyObject.name:
+            enemyImage = pygame.image.load("graphics/" + enemyObject.folder + "/" + enemyObject.state + "/" + str(enemyObject.current) + ".PNG")
+            if playerObject.face == "l":
+              if self.startX > enemyObject.x + enemyImage.get_width() > playerObject.x or self.startX > enemyObject.x > playerObject.x or enemyObject.x + enemyImage.get_width() > playerObject.x > enemyObject.x:
+                hit = 1
+              playerObject.x = self.startX - (playerImage.get_width() - self.startWidth)
+            else:
+              if self.startX < enemyObject.x < playerObject.x + playerImage.get_width() or self.startX < enemyObject.x + enemyImage.get_width() < playerObject.x or enemyObject.x < playerObject.x + playerImage.get_width() < enemyObject.x + enemyImage.get_width():
+                hit = 1
+            if hit == 1:
+              damage(playerObject,enemyObject,enemyEntity, "physical", round(1.2 * self.level + random.randint(-self.level,self.level)))
               enemyObject.changeState("knockback")
               enemyObject.knockbackDistance = round(windowWidth/4)
               enemyObject.knockbackDistanceMax = enemyObject.knockbackDistance
@@ -114,20 +154,41 @@ class knight(classes):
       else:
         playerObject.x = self.startX - self.startWidth
 
-  attacks = [[swing,0,220]]
-  attackNames = ["swing"]
-
-  #hit all frontal entities with your shield
-  #low physical damage, large knockback
-  #medium stamina consumption
-  def shieldBash(self):
-    pass
-
   #dash in a line in front of player with your sword. ensure movement keys do not interrupt.
   #high physical damage, low knockback
   #high stamina consumption
-  def swordDash(self):
-    pass
+  def swordDash(self,firstFrame,playerObject,playerEntity,windowWidth):
+    if firstFrame:
+      playerObject.changeState("swordDash")
+      playerImage = pygame.image.load("graphics/player/stand/0.PNG")
+      self.startWidth = playerImage.get_width()
+      self.progress = 5
+    elif self.progress > 0:
+      playerImage = pygame.image.load("graphics/player/swordDash/" + str(playerObject.current) + ".PNG")
+      for enemyObject in enemyObjects:
+        for enemyEntity in enemyEntities:
+          hit = 0
+          if enemyEntity.name == enemyObject.name:
+            enemyImage = pygame.image.load("graphics/" + enemyObject.folder + "/" + enemyObject.state + "/" + str(enemyObject.current) + ".PNG")
+            if playerObject.face == "l":
+              if self.startX > enemyObject.x + enemyImage.get_width() > playerObject.x or self.startX > enemyObject.x > playerObject.x or enemyObject.x + enemyImage.get_width() > playerObject.x > enemyObject.x:
+                hit = 1
+            else:
+              if self.startX < enemyObject.x < playerObject.x + playerImage.get_width() or self.startX < enemyObject.x + enemyImage.get_width() < playerObject.x or enemyObject.x < playerObject.x + playerImage.get_width() < enemyObject.x + enemyImage.get_width():
+                hit = 1
+            if hit == 1:
+              damage(playerObject,enemyObject,enemyEntity, "physical", round(1.7 * self.level + random.randint(-self.level,self.level)))
+              enemyObject.changeState("knockback")
+              enemyObject.knockbackDistance = round(windowWidth/15)
+              enemyObject.knockbackDistanceMax = enemyObject.knockbackDistance
+              enemyObject.knockbackFace = playerObject.face
+        if playerObject.face == "r":
+          playerObject.x += round(self.speed * 1.2)
+        else:
+          playerObject.x -= round(self.speed * 1.2)
+        self.progress -= 1
+    else:
+      playerObject.changeState("stand")
 
   #block all frontal attacks (not sure if it's only physical or not)
   #low stamina consumption
@@ -135,6 +196,9 @@ class knight(classes):
   #may stun based on timing? not sure.
   def block(self):
     pass
+
+  attacks = [[swing],[shieldBash],[swordDash],[block]]
+  attackNames = ["swing","shieldBash","swordDash","block"]
   
 #Mage template
 class mage(classes):
@@ -222,11 +286,11 @@ class enemy():
       else:
         for attack in self.attacks:
           if attack[1] <= self.distance <= attack[2]:
-            attack[0](self,0,playerObject,playerEntity,enemyObject,attack,windowWidth)
+            attack[0](self,True,playerObject,playerEntity,enemyObject,attack,windowWidth)
             self.currentAttack = attack
             break
     else:
-      self.currentAttack[0](self,1,playerObject,playerEntity,enemyObject,self.currentAttack,windowWidth)
+      self.currentAttack[0](self,False,playerObject,playerEntity,enemyObject,self.currentAttack,windowWidth)
 
 #Troll template
 class troll(enemy):
@@ -240,8 +304,8 @@ class troll(enemy):
     #base is 5 * the troll's level
     self.health = 5 * self.level
 
-  def swing(self,act,playerObject,playerEntity,enemyObject,attack,windowWidth):
-    if act == 0:
+  def swing(self,firstFrame,playerObject,playerEntity,enemyObject,attack,windowWidth):
+    if firstFrame:
       enemyObject.changeState("swing")
       enemyImage = pygame.image.load("graphics/troll/swing/0.PNG")
       self.startX = enemyObject.x
@@ -270,7 +334,7 @@ class troll(enemy):
         if self.startX < playerObject.x < enemyObject.x + enemyImage.get_width() or self.startX < playerObject.x + playerImage.get_width() < enemyObject.x or playerObject.x < enemyObject.x + enemyImage.get_width() < playerObject.x + playerImage.get_width():
           hit = 1
       if hit == 1:
-        damage(enemyObject,playerObject,playerEntity, "physical", (2 * self.level + random.randint(-self.level,self.level)))
+        damage(enemyObject,playerObject,playerEntity, "physical", round(2 * self.level + random.randint(-self.level,self.level)))
         playerObject.changeState("knockback")
         playerObject.knockbackDistance = round(windowWidth/4)
         playerObject.knockbackDistanceMax = playerObject.knockbackDistance

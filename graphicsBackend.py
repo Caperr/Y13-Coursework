@@ -76,13 +76,16 @@ def gameLoop():
   for currentEntity in entities:
     if currentEntity.name == "player":
       playerEntity = currentEntity
+
+  #ID of the current attack being run
+  attackID = 0
   
   #While the game is not quitting...
   while not gameQuit:
 
     if playerObject.state in playerEntity.attackNames:
-      playerEntity.attack(playerObject,playerEntity,windowWidth,0)
-    
+      playerEntity.attack(playerObject,playerEntity,windowWidth,attackID)
+
 ##    print(entities)
 ##    print(sceneObjects)
     #Check for events
@@ -107,26 +110,40 @@ def gameLoop():
 
       #If a key has been pressed
       elif event.type == pygame.KEYDOWN:
-        disabled = playerObject.state in ["jump","drop,knockback"] and playerObject.state in playerEntity.attackNames
+        disabled = playerObject.state in ["jump","drop,knockback"] or playerObject.state in playerEntity.attackNames
+        print(disabled)
         if event.key == pygame.K_a:
           key = "a"
-          playerObject.face = "l"
           if not disabled:
             playerObject.changeState("walk")
+            playerObject.face = "l"
           else:
             playerObject.jumpWalk = [True,"l"]
         elif event.key == pygame.K_d:
           key = "d"
-          playerObject.face = "r"
           if not disabled:
             playerObject.changeState("walk")
+            playerObject.face = "r"
           else:
             playerObject.jumpWalk = [True,"r"]
             
         elif event.key == 257:
           if not disabled:
             playerEntity.attack(playerObject,playerEntity,windowWidth,0)
-            key == "KP1"
+            key = "KP1"
+            attackID = 0
+
+        elif event.key == 258:
+          if not disabled:
+            playerEntity.attack(playerObject,playerEntity,windowWidth,1)
+            key = "KP2"
+            attackID = 1
+
+        elif event.key == 259:
+          if not disabled:
+            playerEntity.attack(playerObject,playerEntity,windowWidth,2)
+            key = "KP3"
+            attackID = 1
             
         if event.key == pygame.K_SPACE and playerObject.state in ["walk","stand"]:
           playerObject.changeState("jump")
