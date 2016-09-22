@@ -38,6 +38,9 @@ FPS = 10
 #Start game loop
 def gameLoop():
   key = ""
+  #keys currently down
+  heldKeys = []
+  
   #Game has is not quitting yet
   gameQuit = False
   #Current graphics module to use
@@ -86,6 +89,8 @@ def gameLoop():
     if playerObject.state in playerEntity.attackNames:
       playerEntity.attack(playerObject,playerEntity,windowWidth,attackID)
 
+    print(heldKeys)
+
 ##    print(entities)
 ##    print(sceneObjects)
     #Check for events
@@ -111,56 +116,90 @@ def gameLoop():
       #If a key has been pressed
       elif event.type == pygame.KEYDOWN:
         disabled = playerObject.state in ["jump","drop,knockback"] or playerObject.state in playerEntity.attackNames
-        print(disabled)
-        if event.key == pygame.K_a:
-          key = "a"
-          if not disabled:
-            playerObject.changeState("walk")
-            playerObject.face = "l"
-          else:
-            playerObject.jumpWalk = [True,"l"]
-        elif event.key == pygame.K_d:
-          key = "d"
-          if not disabled:
-            playerObject.changeState("walk")
-            playerObject.face = "r"
-          else:
-            playerObject.jumpWalk = [True,"r"]
+##        print(disabled)
+        heldKeys.append(event.key)
+##        if event.key == pygame.K_a:
+##          key = "a"
+##          if not disabled:
+##            playerObject.changeState("walk")
+##            playerObject.face = "l"
+##          else:
+##            playerObject.jumpWalk = [True,"l"]
+##        elif event.key == pygame.K_d:
+##          key = "d"
+##          if not disabled:
+##            playerObject.changeState("walk")
+##            playerObject.face = "r"
+##          else:
+##            playerObject.jumpWalk = [True,"r"]
+##            
+##        elif event.key == 257:
+##          if not disabled:
+##            playerEntity.attack(playerObject,playerEntity,windowWidth,0)
+##            key = "KP1"
+##            attackID = 0
+##
+##        elif event.key == 258:
+##          if not disabled:
+##            playerEntity.attack(playerObject,playerEntity,windowWidth,1)
+##            key = "KP2"
+##            attackID = 1
+##
+##        elif event.key == 259:
+##          if not disabled:
+##            playerEntity.attack(playerObject,playerEntity,windowWidth,2)
+##            key = "KP3"
+##            attackID = 1
             
-        elif event.key == 257:
-          if not disabled:
-            playerEntity.attack(playerObject,playerEntity,windowWidth,0)
-            key = "KP1"
-            attackID = 0
-
-        elif event.key == 258:
-          if not disabled:
-            playerEntity.attack(playerObject,playerEntity,windowWidth,1)
-            key = "KP2"
-            attackID = 1
-
-        elif event.key == 259:
-          if not disabled:
-            playerEntity.attack(playerObject,playerEntity,windowWidth,2)
-            key = "KP3"
-            attackID = 1
-            
-        if event.key == pygame.K_SPACE and playerObject.state in ["walk","stand"]:
-          playerObject.changeState("jump")
-          if key == "a":
-            playerObject.jumpWalk = [True,"l"]
-          elif key == "d":
-            playerObject.jumpWalk = [True,"r"]
+##        if event.key == pygame.K_SPACE and playerObject.state in ["walk","stand"]:
+##          playerObject.changeState("jump")
+##          if key == "a":
+##            playerObject.jumpWalk = [True,"l"]
+##          elif key == "d":
+##            playerObject.jumpWalk = [True,"r"]
             
 
       elif event.type == pygame.KEYUP:
-        if (event.key == pygame.K_a and key == "a") or (event.key == pygame.K_d and key == "d"):
-          if not playerObject.state in ["jump","drop"]:
-            playerObject.changeState("stand")
-          else:
-            playerObject.jumpWalk[0] = False
-          key = ""
+        heldKeys.remove(event.key)
+##        if (event.key == pygame.K_a and key == "a") or (event.key == pygame.K_d and key == "d"):
+##          if not playerObject.state in ["jump","drop"]:
+##            playerObject.changeState("stand")
+##          else:
+##            playerObject.jumpWalk[0] = False
+##          key = ""
 
+    disabled = playerObject.state in ["jump","drop,knockback"] or playerObject.state in playerEntity.attackNames
+
+    found32 = False
+    found97 = False
+    found100 = False
+    if not disabled:
+      for key in heldKeys:
+        if key == 97:
+          found97 = True
+          if playerObject.state != "walk":
+            playerObject.changeState("walk")
+          playerObject.face = "l"
+            
+        if key == 100:
+          found100 = True
+          if playerObject.state != "walk":
+            playerObject.changeState("walk")
+          playerObject.face = "r"
+
+        if found97 and found100:
+          if playerObject.state != "stand":
+            playerObject.changeState("stand")
+
+        if key == 32:
+          found32 = True
+          if playerObject.state != "jump":
+            playerObject.changeState("jump")
+            
+      if not found97 and not found32 and not found100:
+        playerObject.changeState("stand")
+      
+          
     #Wipe the screen
     window.fill(objects.white)
     #If the current scene has a backdrop
