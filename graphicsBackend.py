@@ -195,6 +195,21 @@ def gameLoop():
           found32 = True
           if playerObject.state != "jump":
             playerObject.changeState("jump")
+
+        if key == 257:
+            playerEntity.attack(playerObject,playerEntity,windowWidth,0)
+            key = "KP1"
+            attackID = 0
+
+        if key == 258:
+            playerEntity.attack(playerObject,playerEntity,windowWidth,1)
+            key = "KP2"
+            attackID = 1
+
+        if key == 259:
+            playerEntity.attack(playerObject,playerEntity,windowWidth,2)
+            key = "KP3"
+            attackID = 1
             
       if not found97 and not found32 and not found100:
         playerObject.changeState("stand")
