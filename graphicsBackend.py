@@ -18,7 +18,7 @@ playerObject = "none"
 #Initialize pygame
 pygame.init()
 
-#Rate of height game due to jumping (px/s)
+#Rate of height gain due to jumping (px/s)
 jumpSpeed = 35
 
 #rate of falling due to gravity (px/s)
@@ -173,6 +173,10 @@ def gameLoop():
     found32 = False
     found97 = False
     found100 = False
+    found257 = False
+    found258 = False
+    found259 = False
+    
     if not disabled:
       for key in heldKeys:
         if key == 97:
@@ -197,21 +201,24 @@ def gameLoop():
             playerObject.changeState("jump")
 
         if key == 257:
-            playerEntity.attack(playerObject,playerEntity,windowWidth,0)
-            key = "KP1"
-            attackID = 0
+          found257 = True
+          playerEntity.attack(playerObject,playerEntity,windowWidth,0)
+          key = "KP1"
+          attackID = 0
 
         if key == 258:
-            playerEntity.attack(playerObject,playerEntity,windowWidth,1)
-            key = "KP2"
-            attackID = 1
+          found258 = True
+          playerEntity.attack(playerObject,playerEntity,windowWidth,1)
+          key = "KP2"
+          attackID = 1
 
         if key == 259:
-            playerEntity.attack(playerObject,playerEntity,windowWidth,2)
-            key = "KP3"
-            attackID = 1
-            
-      if not found97 and not found32 and not found100:
+          found259 = True
+          playerEntity.attack(playerObject,playerEntity,windowWidth,2)
+          key = "KP3"
+          attackID = 2
+        
+      if not True in [found32,found97,found100,found257,found258,found259]:
         playerObject.changeState("stand")
       
           
