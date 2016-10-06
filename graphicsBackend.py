@@ -35,6 +35,7 @@ pygame.display.set_caption("RPG Game")
 gameClock = pygame.time.Clock()
 FPS = 10
 
+
 #Start game loop
 def gameLoop():
   key = ""
@@ -89,7 +90,7 @@ def gameLoop():
     if playerObject.state in playerEntity.attackNames:
       playerEntity.attack(playerObject,playerEntity,windowWidth,attackID)
 
-    print(heldKeys)
+##    print(heldKeys)
 
 ##    print(entities)
 ##    print(sceneObjects)
@@ -380,7 +381,11 @@ def gameLoop():
           for currentEntity in entities:
             if currentObject.name == currentEntity.name:
               if currentObject.name != "player" and not currentObject.state in ["jump","drop,knockback"]:
-                  currentEntity.attack(playerObject,playerEntity,currentObject,windowWidth)
+                if not currentObject.state in currentEntity.attackNames:
+##                  currentEntity.attack(playerObject,playerEntity,currentObject,windowWidth)
+                  troll.react(currentObject, entities, playerObject, playerEntity, windowWidth)
+                else:
+                  currentEntity.attack(playerObject,playerEntity,currentObject,windowWidth,currentEntity.currentAttack)
         
 
 
