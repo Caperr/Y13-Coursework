@@ -35,7 +35,6 @@ pygame.display.set_caption("RPG Game")
 gameClock = pygame.time.Clock()
 FPS = 10
 
-
 #Start game loop
 def gameLoop():
   key = ""
@@ -116,7 +115,7 @@ def gameLoop():
 
       #If a key has been pressed
       elif event.type == pygame.KEYDOWN:
-        disabled = playerObject.state in ["jump","drop,knockback"] or playerObject.state in playerEntity.attackNames
+##        disabled = playerObject.state in ["jump","drop,knockback"] or playerObject.state in playerEntity.attackNames
 ##        print(disabled)
         heldKeys.append(event.key)
 ##        if event.key == pygame.K_a:
@@ -381,11 +380,7 @@ def gameLoop():
           for currentEntity in entities:
             if currentObject.name == currentEntity.name:
               if currentObject.name != "player" and not currentObject.state in ["jump","drop,knockback"]:
-                if not currentObject.state in currentEntity.attackNames:
-##                  currentEntity.attack(playerObject,playerEntity,currentObject,windowWidth)
-                  troll.react(currentObject, entities, playerObject, playerEntity, windowWidth)
-                else:
-                  currentEntity.attack(playerObject,playerEntity,currentObject,windowWidth,currentEntity.currentAttack)
+                  currentEntity.attack(playerObject,playerEntity,currentObject,windowWidth)
         
 
 

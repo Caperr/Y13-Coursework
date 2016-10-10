@@ -272,7 +272,7 @@ class enemy():
 ##    del self
 
   #Use an attack based on range
-  def attack(self,playerObject,playerEntity,enemyObject,windowWidth,attack):
+  def attack(self,playerObject,playerEntity,enemyObject,windowWidth):
     if not enemyObject.state in self.attackNames:
 ##      if playerObject.x > enemyObject.x:
 ##        self.distance = playerObject.x - enemyObject.x
@@ -284,12 +284,12 @@ class enemy():
 ##        print(self.attackDelay)
         self.attackDelay -= 1
       else:
-##        for attack in self.attacks:
-##          if attack[1] <= self.distance <= attack[2]:
-##            attack[0](self,True,playerObject,playerEntity,enemyObject,attack,windowWidth)
-##            self.currentAttack = attack
-##            break
-        attack[0](self,True,playerObject,playerEntity,enemyObject,attack,windowWidth)
+        for attack in self.attacks:
+          if attack[1] <= self.distance <= attack[2]:
+            attack[0](self,True,playerObject,playerEntity,enemyObject,attack,windowWidth)
+            self.currentAttack = attack
+            break
+##        attack[0](self,True,playerObject,playerEntity,enemyObject,attack,windowWidth)
     else:
       self.currentAttack[0](self,False,playerObject,playerEntity,enemyObject,self.currentAttack,windowWidth)
 

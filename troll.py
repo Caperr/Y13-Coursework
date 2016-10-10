@@ -1,7 +1,8 @@
+import graphicsBackend
 import game
 
-def react(enemyObject, entities, playerObject, playerEntity, windowWidth):
-  for entity in entities:
+def react(enemyObject):
+  for entity in graphicsBackend.entities:
     if entity.name == enemyObject.name:
       enemyEntity = entity
       break
@@ -15,6 +16,6 @@ def react(enemyObject, entities, playerObject, playerEntity, windowWidth):
       enemyObject.face = "l"
     for attack in enemyEntity.attacks:
       if attack[1] <= enemyEntity.distance <= attack[2]:
-        enemyEntity.attack(playerObject,playerEntity,enemyObject,windowWidth,attack)
+        enemyEntity.attack(graphicsBackend.playerObject,graphicsBackend.playerEntity,enemyObject,graphicsBackend.windowWidth,attack)
         enemyEntity.currentAttack = attack
         break
