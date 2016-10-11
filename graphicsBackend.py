@@ -169,27 +169,34 @@ def gameLoop():
 ##            playerObject.jumpWalk[0] = False
 ##          key = ""
 
-    disabled = playerObject.state in ["jump","drop,knockback"] or playerObject.state in playerEntity.attackNames
-
+    disabled = playerObject.state in ["jump","drop","knockback"] or playerObject.state in playerEntity.attackNames
+          
     found32 = False
     found97 = False
     found100 = False
     found257 = False
     found258 = False
     found259 = False
-    
+
+##    print(disabled)
+##    print(playerObject.state)
+
     if not disabled:
       for key in heldKeys:
         if key == 97:
           found97 = True
           if playerObject.state != "walk":
             playerObject.changeState("walk")
+          elif disabled:
+            playerObject.jumpWalk = [True,"l"]
           playerObject.face = "l"
             
         if key == 100:
           found100 = True
           if playerObject.state != "walk":
             playerObject.changeState("walk")
+          elif disabled:
+            playerObject.jumpWalk = [True,"r"]
           playerObject.face = "r"
 
         if found97 and found100:
@@ -218,10 +225,9 @@ def gameLoop():
           playerEntity.attack(playerObject,playerEntity,windowWidth,2)
           key = "KP3"
           attackID = 2
-        
+
       if not True in [found32,found97,found100,found257,found258,found259]:
         playerObject.changeState("stand")
-      
           
     #Wipe the screen
     window.fill(objects.white)
@@ -358,6 +364,7 @@ def gameLoop():
               else:
                 currentObject.x += currentEntity.speed
             #jumping
+##            print(playerObject.state)
             if currentObject.state == "jump":
 ##                maxheight = floor - image.get_height() - currentEntity.jumpHeight
 ##                print("max",floor - image.get_height() - currentEntity.jumpHeight)
