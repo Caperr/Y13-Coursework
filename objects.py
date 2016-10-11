@@ -82,7 +82,7 @@ class entity(objects):
   #current image to render
   current = 0
   #total number of states in the folder
-  totalStates = 0
+  totalStates = 3
   #current state folder to load from
   state = "stand"
   #previous active state
