@@ -33,7 +33,7 @@ pygame.display.set_caption("RPG Game")
 
 #Initialize game clock
 gameClock = pygame.time.Clock()
-FPS = 10
+FPS = 15
 
 
 #Start game loop
