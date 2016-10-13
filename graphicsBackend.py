@@ -9,10 +9,33 @@ import game
 #Enemies
 import troll
 
-floor = 575
+#Current graphics module to use
+currentScene = "forest"
 
+#The dimentions of the game window
+windowWidth = 800
+windowHeight = 600
+
+backdrop = "none"
+bg = ""
+
+#Load graphics module
+if currentScene == "mainMenu":
+  sceneObjects = mainMenu.sceneObjects
+  backdrop = mainMenu.backdrop
+
+#...
+elif currentScene == "forest":
+  sceneObjects = forest.sceneObjects
+  backdrop = forest.backdrop
+
+if backdrop != "none":
+  bg = pygame.image.load(backdrop)
+  windowWidth = bg.get_width()
+  windowHeight = bg.get_height()
+
+floor = round((9/10)*windowHeight)
 entities = []
-
 playerObject = "none"
 
 #Initialize pygame
@@ -24,9 +47,6 @@ jumpSpeed = 35
 #rate of falling due to gravity (px/s)
 gravity = 40
 
-#The dimentions of the game window
-windowWidth = 800
-windowHeight = 600
 #Initialize the game window
 window = pygame.display.set_mode((windowWidth,windowHeight))
 pygame.display.set_caption("RPG Game")
@@ -44,18 +64,6 @@ def gameLoop():
   
   #Game has is not quitting yet
   gameQuit = False
-  #Current graphics module to use
-  currentScene = "forest"
-
-  #Load graphics module
-  if currentScene == "mainMenu":
-    sceneObjects = mainMenu.sceneObjects
-    backdrop = mainMenu.backdrop
-
-  #...
-  elif currentScene == "forest":
-    sceneObjects = forest.sceneObjects
-    backdrop = forest.backdrop
 
   #initialize player
   player = game.knight("player")
@@ -228,69 +236,8 @@ def gameLoop():
 
       if not True in [found32,found97,found100,found257,found258,found259]:
         playerObject.changeState("stand")
-          
-    #Wipe the screen
-    window.fill(objects.white)
-    #If the current scene has a backdrop
-    if backdrop != "":
-      #Load the backdrop
-      bg = pygame.image.load(backdrop)
-      #blit it onto the screen
-      window.blit(bg,[0,0])
 
-########GRAPHIC OBJECT BEHAVIOUR
-    #Check through all loaded objects
-    for currentObject in range(len(sceneObjects)):
-      #If the current object is visible
-      if sceneObjects[currentObject].toRender:
-        #"shortcut" to the current object's class instance
-        workingObject = sceneObjects[currentObject]
-        #if the object is a rectangle
-        if workingObject.objectType == "rectangle":
-          #draw it
-          pygame.draw.rect(window, workingObject.colour, [workingObject.x,workingObject.y,workingObject.width,workingObject.height])
-        #If it's text
-        elif workingObject.objectType == "text":
-          #Render the text
-          shownText = font.render(workingObject.text,workingObject.antialiasing,workingObject.colour)
-          #blit it onto the screen
-          window.blit(shownText, [workingObject.x,workingObject.y])
-        #If it's an image
-        elif workingObject.objectType == "image":
-          #load
-          image = pygame.image.load(workingObject.file).convert_alpha()
-          #blit
-          window.blit(image, [workingObject.x,workingObject.y])
-        #if it's an animated image
-        elif workingObject.objectType == "animation":
-          #if the animation is running
-          if workingObject.state == 1:
-            #load it's current image, taken from the images array inside of it's folder
-            image = pygame.image.load("graphics/" + workingObject.folder + "/" + str(workingObject.current) + ".PNG").convert_alpha()
-            #blit
-            window.blit(image, [workingObject.x,workingObject.y])
-            #increment current image
-            workingObject.current += 1
-            #reset current image id if the last image has been drawn
-            if workingObject.current == workingObject.totalStates:
-              workingObject.current = 0
-        #if it's an entity. entities are used for associating the state of an entity with multiple animations
-        #entity animations are always running
-        elif workingObject.objectType == "entity":
-          #load the current image from it's state folder, from the entity's folder
-          image = pygame.image.load("graphics/" + workingObject.folder + "/" + workingObject.state + "/" + str(workingObject.current) + ".PNG").convert_alpha()
-          #if the image is facing left, flip it
-          if workingObject.face == "l":
-            image = pygame.transform.flip(image, True, False)
-          #blit
-          window.blit(image, [workingObject.x,workingObject.y])
-          #increment current image
-          workingObject.current += 1
-          #reset if last image is reached.
-          if workingObject.current == workingObject.totalStates:
-            workingObject.current = 0
-
-    #entity actions
+        #entity actions
     for currentObject in sceneObjects:
 ##        print(currentObject.previous)
 ##        print(currentObject.jumpWalk)
@@ -393,8 +340,65 @@ def gameLoop():
                   troll.react(currentObject, entities, playerObject, playerEntity, windowWidth)
                 else:
                   currentEntity.attack(playerObject,playerEntity,currentObject,windowWidth,currentEntity.currentAttack)
-        
+          
+    #Wipe the screen
+    window.fill(objects.white)
+    #If the current scene has a backdrop
+    if backdrop != "":
+      #blit it onto the screen
+      window.blit(bg,[0,0])
 
+########GRAPHIC OBJECT BEHAVIOUR
+    #Check through all loaded objects
+    for currentObject in range(len(sceneObjects)):
+      #If the current object is visible
+      if sceneObjects[currentObject].toRender:
+        #"shortcut" to the current object's class instance
+        workingObject = sceneObjects[currentObject]
+        #if the object is a rectangle
+        if workingObject.objectType == "rectangle":
+          #draw it
+          pygame.draw.rect(window, workingObject.colour, [workingObject.x,workingObject.y,workingObject.width,workingObject.height])
+        #If it's text
+        elif workingObject.objectType == "text":
+          #Render the text
+          shownText = font.render(workingObject.text,workingObject.antialiasing,workingObject.colour)
+          #blit it onto the screen
+          window.blit(shownText, [workingObject.x,workingObject.y])
+        #If it's an image
+        elif workingObject.objectType == "image":
+          #load
+          image = pygame.image.load(workingObject.file).convert_alpha()
+          #blit
+          window.blit(image, [workingObject.x,workingObject.y])
+        #if it's an animated image
+        elif workingObject.objectType == "animation":
+          #if the animation is running
+          if workingObject.state == 1:
+            #load it's current image, taken from the images array inside of it's folder
+            image = pygame.image.load("graphics/" + workingObject.folder + "/" + str(workingObject.current) + ".PNG").convert_alpha()
+            #blit
+            window.blit(image, [workingObject.x,workingObject.y])
+            #increment current image
+            workingObject.current += 1
+            #reset current image id if the last image has been drawn
+            if workingObject.current == workingObject.totalStates:
+              workingObject.current = 0
+        #if it's an entity. entities are used for associating the state of an entity with multiple animations
+        #entity animations are always running
+        elif workingObject.objectType == "entity":
+          #load the current image from it's state folder, from the entity's folder
+          image = pygame.image.load("graphics/" + workingObject.folder + "/" + workingObject.state + "/" + str(workingObject.current) + ".PNG").convert_alpha()
+          #if the image is facing left, flip it
+          if workingObject.face == "l":
+            image = pygame.transform.flip(image, True, False)
+          #blit
+          window.blit(image, [workingObject.x,workingObject.y])
+          #increment current image
+          workingObject.current += 1
+          #reset if last image is reached.
+          if workingObject.current == workingObject.totalStates:
+            workingObject.current = 0
 
     #update all loaded graphic objects
     pygame.display.flip()
