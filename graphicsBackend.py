@@ -188,6 +188,7 @@ def gameLoop():
 
 ##    print(disabled)
 ##    print(playerObject.state)
+##    print(heldKeys)
 
     if not disabled:
       for key in heldKeys:
@@ -244,9 +245,13 @@ def gameLoop():
       if currentObject.objectType == "entity":
         image = pygame.image.load("graphics/" + currentObject.folder + "/" + currentObject.state + "/" + str(currentObject.current) + ".PNG")
         feet = currentObject.y + image.get_height()
-##          print("feet",feet)
-##          print("floor",floor)
-##          print(feet > floor)
+        print(currentObject.name)
+##        print(currentObject.y)
+##        print(image.get_height())
+##        print(currentObject.y + image.get_height())
+        print("feet",feet)
+        print("floor",floor)
+        print(feet > floor)
         #Make sure entities are above the ground
         if feet > floor:
           currentObject.y = floor - image.get_height()
