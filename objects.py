@@ -105,6 +105,10 @@ class entity(objects):
     self.updateVars()
 
   def changeState(self,new):
+    oldHeight = pygame.image.load("graphics/" + self.folder + "/" + self.state + "/" + str(self.current) + ".PNG").get_height()
+    newHeight = pygame.image.load("graphics/" + self.folder + "/" + new + "/0.PNG").get_height()
+    if newHeight < oldHeight:
+      self.y += oldHeight - newHeight
     self.previous.append(self.state)
     if len(self.previous) > 2:
       self.previous.pop(0)
