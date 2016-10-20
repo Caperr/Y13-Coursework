@@ -109,6 +109,7 @@ class knight(classes):
               enemyObject.knockbackDistance = round(windowWidth/10)
               enemyObject.knockbackDistanceMax = enemyObject.knockbackDistance
               enemyObject.knockbackFace = playerObject.face
+##    print(playerObject.current)
     if playerObject.current == playerObject.totalStates - 1:
       playerObject.changeState("stand")
       if playerObject.face == "l":

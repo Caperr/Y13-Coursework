@@ -245,15 +245,21 @@ def gameLoop():
       if currentObject.objectType == "entity":
         image = pygame.image.load("graphics/" + currentObject.folder + "/" + currentObject.state + "/" + str(currentObject.current) + ".PNG")
         feet = currentObject.y + image.get_height()
-        print(currentObject.name)
-##        print(currentObject.y)
-##        print(image.get_height())
-##        print(currentObject.y + image.get_height())
-        print("feet",feet)
-        print("floor",floor)
-        print(feet > floor)
+##        print(currentObject.name)
+##        if playerObject.state == "swing" and currentObject.name == "player":
+##          print("---------------------")
+##          print("Current",playerObject.current)
+##          print("Y should be",floor - image.get_height())
+##          print("Y",currentObject.y)
+##          print("Height",image.get_height())
+##          print("feet",feet)
+##        print("feet",feet)
+##        print("floor",floor)
+##        print(feet > floor)
         #Make sure entities are above the ground
         if feet > floor:
+##          if currentObject.name == "player":
+##            print("RISE TO",floor - image.get_height())
           currentObject.y = floor - image.get_height()
         #Make sure entities are on the screen
         if currentObject.x < 0:
@@ -261,13 +267,19 @@ def gameLoop():
         elif currentObject.x + image.get_width() > windowWidth:
           currentObject.x = windowWidth - image.get_width()
         #gravity
-        if currentObject.state not in ["jump","drop","knockback"] and feet < floor:
+        if (not currentObject.state in ["jump","drop","knockback"]) and (not currentObject.state in currentEntity.attackNames) and (feet < floor):
+##          if currentObject.name == "player":
+##            print("DROP")
+##          print(feet)
+##          print(floor)
           currentObject.changeState("drop")
         if currentObject.state == "drop":
           if floor - feet >= gravity:
             currentObject.y += gravity
           else:
             currentObject.y += floor - feet
+        if currentObject.state in currentEntity.attackNames and feet < floor:
+          currentObject.y = floor - image.get_height()
         if currentObject.state == "drop" and currentObject.y + image.get_height() == floor:
           currentObject.changeState("stand")
           if currentObject.name == "player":
@@ -345,6 +357,8 @@ def gameLoop():
                   troll.react(currentObject, entities, playerObject, playerEntity, windowWidth)
                 else:
                   currentEntity.attack(playerObject,playerEntity,currentObject,windowWidth,currentEntity.currentAttack)
+
+##    print(playerObject.totalStates)
           
     #Wipe the screen
     window.fill(objects.white)
@@ -380,14 +394,14 @@ def gameLoop():
         elif workingObject.objectType == "animation":
           #if the animation is running
           if workingObject.state == 1:
-            #load it's current image, taken from the images array inside of it's folder
+            #load its current image, taken from the images array inside of its folder
             image = pygame.image.load("graphics/" + workingObject.folder + "/" + str(workingObject.current) + ".PNG").convert_alpha()
             #blit
             window.blit(image, [workingObject.x,workingObject.y])
             #increment current image
             workingObject.current += 1
             #reset current image id if the last image has been drawn
-            if workingObject.current == workingObject.totalStates:
+            if workingObject.current == workingObject.totalStates - 1:
               workingObject.current = 0
         #if it's an entity. entities are used for associating the state of an entity with multiple animations
         #entity animations are always running
@@ -399,11 +413,12 @@ def gameLoop():
             image = pygame.transform.flip(image, True, False)
           #blit
           window.blit(image, [workingObject.x,workingObject.y])
-          #increment current image
-          workingObject.current += 1
           #reset if last image is reached.
-          if workingObject.current == workingObject.totalStates:
+          if workingObject.current == workingObject.totalStates - 1:
             workingObject.current = 0
+          else:
+            #increment current image
+            workingObject.current += 1
 
     #update all loaded graphic objects
     pygame.display.flip()
