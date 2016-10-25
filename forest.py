@@ -1,22 +1,27 @@
+# import graphic objects
 from objects import *
-
-backdrop = "graphics/background.png"
+# used to store and transfer all objects to be loaded
 sceneObjects = []
 
 
-def init(entities):
+def init(entities,windowWidth,windowHeight):
+    # find the player and enemy game objects, these are needed for assigning health bars
     for currentEntity in entities:
         if currentEntity.name == "player":
             playerEntity = currentEntity
         elif currentEntity.name == "enemy1":
             enemy1Entity = currentEntity
-    player = entity("player", 80, 300, False, True,
+    # create the player graphic object as an entity
+    player = entity("player", round(windowWidth / 10), round(windowHeight / 2), False, True,
                     [["walk", 4], ["stand", 1], ["jump", 1], ["drop", 1], ["knockback", 1], ["swing", 7],
                      ["shieldBash", 7], ["swordDash", 1]], "stand", "player", "r")
+    # assign the player's healthbar
     playerHealth = healthBar("playerHealth", playerEntity, player)
-    enemy1 = entity("enemy1", 450, 475, False, True,
+    # create the enemy1 graphic object as an entity
+    enemy1 = entity("enemy1", round(windowHeight / 10 * 6), round(windowHeight / 2), False, True,
                     [["walk", 4], ["stand", 1], ["jump", 1], ["drop", 1], ["knockback", 1], ["swing", 7]], "stand",
                     "troll", "l")
+    # assign enemy1's healthbar
     enemy1Health = healthBar("enemy1Health", enemy1Entity, enemy1)
-    # add to sceneObjects
+    # return all of the objects
     return [player, enemy1, playerHealth, enemy1Health]

@@ -1,3 +1,5 @@
+# file for testing code. not used in the game.
+
 import pygame
 
 pygame.init()

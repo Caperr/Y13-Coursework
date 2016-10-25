@@ -1,61 +1,95 @@
 # Support libraries
 import pygame
 # Scenes
-import mainMenu
-import forest
 # Game modules
-import objects
 import game
 # Enemies
 import troll
 
-# initialize player
-player = game.knight("player")
-entities = [player]
-
-enemy1 = game.troll("enemy1")
-game.enemyEntities.append(enemy1)
-
-for enemy in game.enemyEntities:
-    entities.append(enemy)
-
-for currentEntity in entities:
-    if currentEntity.name == "player":
-        playerEntity = currentEntity
-
-forest.sceneObjects = forest.init(entities)
-
 # Current graphics module to use
 currentScene = "forest"
 
-# The dimentions of the game window
+# the backdrop of the scene
+backdrop = ""
+# Later used to load the backdrop
+bg = None
+
+# The dimensions of the game window
 windowWidth = 800
 windowHeight = 600
 
-backdrop = "none"
-bg = ""
+# temp is used to transfer the window dimensions to objects.py
+import temp
+# Make the image path for the current backdrop
+backdrop = "graphics/" + currentScene + ".PNG"
+# load the image
+bg = pygame.image.load(backdrop)
+# get its dimensions
+windowWidth = bg.get_width()
+windowHeight = bg.get_height()
+# transfer the dimensions to temp
+temp.width = windowWidth
+temp.height = windowHeight
 
-# Load graphics module
-if currentScene == "mainMenu":
-    sceneObjects = mainMenu.sceneObjects
-    backdrop = mainMenu.backdrop
+# import the graphic objects
+import objects
 
-# ...
-elif currentScene == "forest":
+# objects.init(windowWidth,windowHeight)
+# objects.windowHeight = windowHeight
+# objects.windowWidth = windowWidth
+
+# if the scene is forest
+if currentScene == "forest":
+    # import the scene module
+    import forest
+    # update knight stats based on window size
+    game.knight.speed = round(windowWidth / 30)
+    game.knight.jumpHeight = round(windowHeight / 4)
+
+    # initialize player
+    player = game.knight("player")
+    entities = [player]
+
+    # update troll stats based on window size
+    game.troll.speed = round(windowWidth / 60)
+    game.troll.jumpHeight = round(windowHeight / 10)
+
+    # initialize enemy1
+    enemy1 = game.troll("enemy1")
+    game.enemyEntities.append(enemy1)
+
+    # add all game objects to entities array
+    for enemy in game.enemyEntities:
+        entities.append(enemy)
+
+    # find the player game object
+    # store it for quicker access later
+    for currentEntity in entities:
+        if currentEntity.name == "player":
+            playerEntity = currentEntity
+
+    # initialize graphic objects based on window size
+    forest.sceneObjects = forest.init(entities,windowWidth,windowHeight)
+    # get list of objects
     sceneObjects = forest.sceneObjects
-    backdrop = forest.backdrop
 
-if backdrop != "none":
-    bg = pygame.image.load(backdrop)
-    windowWidth = bg.get_width()
-    windowHeight = bg.get_height()
+# if the current scene is mainMenu
+elif currentScene == "mainMenu":
+    # import the module
+    import mainMenu
+    # initialize the graphic objects based on window size
+    mainMenu.sceneObjects = mainMenu.init(windowWidth,windowHeight)
+    sceneObjects = mainMenu.sceneObjects
 
+# place the floor 1 tenth of the window size above the bottom
 floor = round((9 / 10) * windowHeight)
-playerObject = "none"
-
+# find the player graphic object
+playerObject = None
+# by scanning through the list of graphic objects
 for currentObject in sceneObjects:
     if currentObject.name == "player":
         playerObject = currentObject
+    # if the object's name starts with "enemy" add it a list of enemies
     elif currentObject.name[0:5] == "enemy":
         game.enemyObjects.append(currentObject)
 
@@ -63,10 +97,10 @@ for currentObject in sceneObjects:
 pygame.init()
 
 # Rate of height gain due to jumping (px/s)
-jumpSpeed = 35
+jumpSpeed = round(windowHeight * 0.08)
 
 # rate of falling due to gravity (px/s)
-gravity = 40
+gravity = round(windowHeight * 0.07)
 
 # Initialize the game window
 window = pygame.display.set_mode((windowWidth, windowHeight))
@@ -91,13 +125,15 @@ def gameLoop():
 
     # While the game is not quitting...
     while not gameQuit:
-
-        if playerObject.state in playerEntity.attackNames:
-            playerEntity.attack(playerObject, playerEntity, windowWidth, attackID)
+        # if the player exists
+        if playerObject != None:
+            # if the player is executing an attack
+            if playerObject.state in playerEntity.attackNames:
+                # execute the next frame
+                playerEntity.attack(playerObject, playerEntity, windowWidth, attackID)
 
         # Check for events
         for event in pygame.event.get():
-            ##      print(event)
             # If the quit button (X) has been pressed
             if event.type == pygame.QUIT:
                 # Quit the game
@@ -122,7 +158,10 @@ def gameLoop():
             elif event.type == pygame.KEYDOWN:
                 # disabled = playerObject.state in ["jump",
                 #                                   "drop,knockback"] or playerObject.state in playerEntity.attackNames
+
+                # add it to an array of held keys
                 heldKeys.append(event.key)
+
                     # if event.key == pygame.K_a:
                     #   key = "a"
                     #   if not disabled:
@@ -163,9 +202,11 @@ def gameLoop():
                     #   elif key == "d":
                     #     playerObject.jumpWalk = [True,"r"]
 
-
+            # if a key was lifted
             elif event.type == pygame.KEYUP:
+                # remove it from the array of held keys
                 heldKeys.remove(event.key)
+
                         # if (event.key == pygame.K_a and key == "a") or (event.key == pygame.K_d and key == "d"):
                         #   if not playerObject.state in ["jump","drop"]:
                         #     playerObject.changeState("stand")
@@ -173,8 +214,14 @@ def gameLoop():
                         #     playerObject.jumpWalk[0] = False
                         #   key = ""
 
-        disabled = playerObject.state in ["jump", "drop", "knockback"] or playerObject.state in playerEntity.attackNames
+        # default to disabled
+        disabled = True
+        # if the player exists
+        if playerObject != None:
+            # check if the player is in a state where keys should not be pressed
+            disabled = playerObject.state in ["jump", "drop", "knockback"] or playerObject.state in playerEntity.attackNames
 
+        # default all recognised keys to not pressed
         found32 = False
         found97 = False
         found100 = False
@@ -182,75 +229,85 @@ def gameLoop():
         found258 = False
         found259 = False
 
+        #if the player is disabled
         if not disabled:
+            # check through all keys currently down
             for key in heldKeys:
+                # if it's a
                 if key == 97:
+                    # note that the key was found
                     found97 = True
+                    # if the player isnt walking already
                     if playerObject.state != "walk":
+                        # walk
                         playerObject.changeState("walk")
-                    elif disabled:
-                        playerObject.jumpWalk = [True, "l"]
+                    # left
                     playerObject.face = "l"
-
+                # if it's d
                 if key == 100:
                     found100 = True
+                    # walk right
                     if playerObject.state != "walk":
                         playerObject.changeState("walk")
-                    elif disabled:
-                        playerObject.jumpWalk = [True, "r"]
                     playerObject.face = "r"
-
+                # if both a and d are down
                 if found97 and found100:
+                    # stand
                     if playerObject.state != "stand":
                         playerObject.changeState("stand")
-
+                # if it's space
                 if key == 32:
                     found32 = True
+                    # jump
                     if playerObject.state != "jump":
                         playerObject.changeState("jump")
-
+                # if it's KP1
                 if key == 257:
                     found257 = True
+                    # execute attack 1
                     playerEntity.attack(playerObject, playerEntity, windowWidth, 0)
                     key = "KP1"
                     attackID = 0
-
+                # if it's KP2
                 if key == 258:
                     found258 = True
+                    # execute attack 2
                     playerEntity.attack(playerObject, playerEntity, windowWidth, 1)
                     key = "KP2"
                     attackID = 1
-
+                # if it's KP3
                 if key == 259:
                     found259 = True
+                    # execute attack 3
                     playerEntity.attack(playerObject, playerEntity, windowWidth, 2)
                     key = "KP3"
                     attackID = 2
-
+            # if no keys were found
             if True not in [found32, found97, found100, found257, found258, found259]:
+                # stand
                 playerObject.changeState("stand")
 
-                # entity actions
+        # entity actions
         for currentObject in sceneObjects:
-            ##        print(currentObject.previous)
-            ##        print(currentObject.jumpWalk)
-            if currentObject.name == "playerHealth":
-                currentObject.x = playerObject.x
-                currentObject.y = playerObject.y - 20
-                currentObject.width = round(playerEntity.health / playerEntity.maxHealth * 100)
+            # if the current graphic object being scanned is an entity
             if currentObject.objectType == "entity":
                 # associate entities with their game class counterpart (e.g knight/mage for the player etc)
                 for currentEntity in entities:
                     if currentObject.name == currentEntity.name:
+                        # if the entity is out of health
                         if currentEntity.health <= 0:
+                            # remove them from thr list of objects
                             sceneObjects.remove(currentObject)
                             entities.remove(currentEntity)
+                            # remove their health bar
                             for current in sceneObjects:
                                 if current.name == currentObject.name + "Health":
                                     sceneObjects.remove(current)
+                        # load the entity's current frame
                         image = pygame.image.load(
                             "graphics/" + currentObject.folder + "/" + currentObject.state + "/" + str(
                                 currentObject.current) + ".PNG")
+                        # get the y value of the entity's feet
                         feet = currentObject.y + image.get_height()
                                 # print(currentObject.name)
                                 # if playerObject.state == "swing" and currentObject.name == "player":
@@ -274,69 +331,97 @@ def gameLoop():
                         elif currentObject.x + image.get_width() > windowWidth:
                             currentObject.x = windowWidth - image.get_width()
                         # gravity
-                        if (not currentObject.state in ["jump", "drop", "knockback"]) and (
+                        # if the wntity is not jumping, dropping or being knocked back AND the feet are above the floor
+                        if (currentObject.state not in ["jump", "drop", "knockback"]) and (
                                 not currentObject.state in currentEntity.attackNames) and (feet < floor):
                                       # if currentObject.name == "player":
                                       #   print("DROP")
                                       # print(feet)
                                       # print(floor)
+                            # make the entity drop
                             currentObject.changeState("drop")
+                        # if the entity is dropping
                         if currentObject.state == "drop":
+                            # if the distance between the entity's feet and the floor is more than or equal to the distance the entity moves per frame due to gravity
                             if floor - feet >= gravity:
+                                # move the entity down at the rate of game gravity
                                 currentObject.y += gravity
+                            # if the distance is less than the amount needed for normal gravity
                             else:
+                                # move the entity down the remaining distance
                                 currentObject.y += floor - feet
+                        # TODO: this is what's breaking the animations (maybe)
+                        # if the entity is attacking and the entity's feet are above the ground
                         if currentObject.state in currentEntity.attackNames and feet < floor:
+                            # move them back onto the ground
                             currentObject.y = floor - image.get_height()
+                        # if the entity is dropping but they have reached the ground
                         if currentObject.state == "drop" and currentObject.y + image.get_height() == floor:
+                            # revert to standing
                             currentObject.changeState("stand")
-                            if currentObject.name == "player":
-                                if currentObject.jumpWalk[0]:
-                                    currentObject.changeState("walk")
-                                    currentObject.face = currentObject.jumpWalk[1]
-                                currentObject.jumpWalk[0] = False
+                        # if the entity is being knocked back
                         if currentObject.state == "knockback":
+                            # keep them facing the right way
                             currentObject.face = currentObject.knockbackFace
+                            # if the entity is below half way through the knockback sequence
                             if currentObject.knockbackDistance >= round(currentObject.knockbackDistanceMax / 2):
+                                # make them gain height at jump rate
                                 currentObject.y -= round(jumpSpeed / 2)
+                            # if the entity is above half way through the knockback sequence
                             elif currentObject.knockbackDistance != 0:
+                                # make them lose weight at jump speed, in the same way as gravity
                                 if floor - feet >= round(jumpSpeed / 2):
                                     currentObject.y += round(jumpSpeed / 2)
                                 else:
                                     currentObject.y += floor - feet
+                            # if the remaining knockback distance is more than 1.5 * the jump speed
                             if currentObject.knockbackDistance >= round(1.5 * jumpSpeed):
+                                # add 1.5 * the jump speed to the x position
                                 if currentObject.face == "l":
                                     currentObject.x -= round(1.5 * jumpSpeed)
                                 else:
                                     currentObject.x += round(1.5 * jumpSpeed)
+                                # take the amount moved from the remaining distance
                                 currentObject.knockbackDistance -= 1.5 * jumpSpeed
+                            # if the remaining distance is less than 1.5 * the jump speed
                             elif currentObject.knockbackDistance != 0:
+                                # add the remaining distance
                                 if currentObject.face == "l":
                                     currentObject.x -= currentObject.knockbackDistance
                                 else:
                                     currentObject.x += currentObject.knockbackDistance
+                                # reset knockback
                                 currentObject.knockbackDistance = 0
+                            # if there is no knockback remaining
                             else:
+                                # if the entity is on the ground
                                 if currentObject.y == 0:
+                                    # stand
                                     currentObject.changeState("stand")
-                                    if currentObject.name == "player":
-                                        if currentObject.jumpWalk[0]:
-                                            currentObject.changeState("walk")
-                                            currentObject.face = currentObject.jumpWalk[1]
-                                        currentObject.jumpWalk[0] = False
+                                # if the entity is in the air
                                 else:
+                                    # drop
                                     currentObject.changeState("drop")
+
                         # walking
+                        # if:
+                        # the entity is walking
+                        # OR
+                        # they're walking AND they were walking before they jumped
+                        # OR
+                        # they're dropping AND they were last walking OR the state before last was walk
                         if currentObject.state == "walk" or (
                                         currentObject.state == "jump" and currentObject.previous[-1] == "walk") or (
                                         currentObject.state == "drop" and (
-                                                currentObject.previous[1] == "walk" or currentObject.previous[
+                                                currentObject.previous[-1] == "walk" or currentObject.previous[
                                             -2] == "walk")):
+                            # move the entity based on their game entity's walk speed
                             if currentObject.face == "l":
                                 currentObject.x -= currentEntity.speed
                             else:
                                 currentObject.x += currentEntity.speed
-                                # jumping
+                        # jumping
+                        # if the entity is jumping
                         if currentObject.state == "jump":
                             # if the entity is below the jump height
                             if currentObject.y > floor - image.get_height() - currentEntity.jumpHeight:
@@ -354,13 +439,21 @@ def gameLoop():
                                 # switch to dropping
                                 currentObject.changeState("drop")
 
+                # enemy attack continuation and AI call
+                # scan through all objects on the scene
                 for currentObject in sceneObjects:
+                    # associate with game object counterpart
                     for currentEntity in entities:
                         if currentObject.name == currentEntity.name:
+                            # if they are not the player and they are not disabled
                             if currentObject.name != "player" and currentObject.state not in ["jump", "drop,knockback"]:
+                                # if they are not attacking
                                 if not currentObject.state in currentEntity.attackNames:
+                                    # call their AI file
                                     troll.react(currentObject, entities, playerObject, playerEntity, windowWidth)
+                                # if they are attacking
                                 else:
+                                    # continue the attack
                                     currentEntity.attack(playerObject, playerEntity, currentObject, windowWidth,
                                                          currentEntity.currentAttack)
 
@@ -386,7 +479,7 @@ def gameLoop():
                 # If it's text
                 elif workingObject.objectType == "text":
                     # Render the text
-                    shownText = font.render(workingObject.text, workingObject.antialiasing, workingObject.colour)
+                    shownText = objects.font.render(workingObject.text, workingObject.antialiasing, workingObject.colour)
                     # blit it onto the screen
                     window.blit(shownText, [workingObject.x, workingObject.y])
                 # If it's an image
@@ -427,10 +520,14 @@ def gameLoop():
                     else:
                         # increment current image
                         workingObject.current += 1
+                # if it's a health bar
                 elif workingObject.objectType == "healthBar":
+                    # update the health bar's position
                     workingObject.update()
+                    # draw the green section
                     pygame.draw.rect(window, objects.green,
                                      [workingObject.x, workingObject.y, workingObject.gwidth, workingObject.height])
+                    # draw the red section
                     pygame.draw.rect(window, objects.red,
                                      [workingObject.x + workingObject.gwidth, workingObject.y, workingObject.rwidth,
                                       workingObject.height])
