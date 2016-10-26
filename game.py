@@ -38,6 +38,7 @@ class classes:
     # recharge.
     # Stamina is recharged naturally over time, or can be recharged instantly with sugary food.
     stamina = 10
+    maxStamina = 10
     # Player walking speed
     speed = 0
     # Player jump height
@@ -347,6 +348,9 @@ class enemy:
     # temporary variables for use in animation
     startX = 0
     startWidth = 0
+    # stamina works the same as player stamina
+    stamina = 10
+    maxStamina = 10
 
     # same as player dodge
     def dodge(self):

@@ -14,10 +14,6 @@ backdrop = ""
 # Later used to load the backdrop
 bg = None
 
-# The dimensions of the game window
-windowWidth = 800
-windowHeight = 600
-
 # temp is used to transfer the window dimensions to objects.py
 import temp
 # Make the image path for the current backdrop
@@ -27,9 +23,14 @@ bg = pygame.image.load(backdrop)
 # get its dimensions
 windowWidth = bg.get_width()
 windowHeight = bg.get_height()
+
+# place the floor 1 tenth of the window size above the bottom
+floor = round((9 / 10) * windowHeight)
+
 # transfer the dimensions to temp
 temp.width = windowWidth
 temp.height = windowHeight
+temp.floor = floor
 
 # import the graphic objects
 import objects
@@ -81,8 +82,6 @@ elif currentScene == "mainMenu":
     mainMenu.sceneObjects = mainMenu.init(windowWidth,windowHeight)
     sceneObjects = mainMenu.sceneObjects
 
-# place the floor 1 tenth of the window size above the bottom
-floor = round((9 / 10) * windowHeight)
 # find the player graphic object
 playerObject = None
 # by scanning through the list of graphic objects
@@ -217,7 +216,7 @@ def gameLoop():
         # default to disabled
         disabled = True
         # if the player exists
-        if playerObject != None:
+        if playerObject is not None:
             # check if the player is in a state where keys should not be pressed
             disabled = playerObject.state in ["jump", "drop", "knockback"] or playerObject.state in playerEntity.attackNames
 
@@ -301,7 +300,7 @@ def gameLoop():
                             entities.remove(currentEntity)
                             # remove their health bar
                             for current in sceneObjects:
-                                if current.name == currentObject.name + "Health":
+                                if current.name == currentObject.name + "Health" or current.name == currentObject.name + "Stamina" :
                                     sceneObjects.remove(current)
                         # load the entity's current frame
                         image = pygame.image.load(
@@ -530,6 +529,18 @@ def gameLoop():
                     # draw the red section
                     pygame.draw.rect(window, objects.red,
                                      [workingObject.x + workingObject.gwidth, workingObject.y, workingObject.rwidth,
+                                      workingObject.height])
+
+                # if it's a stamina bar
+                elif workingObject.objectType == "staminaBar":
+                    # update the stamina bar's position
+                    workingObject.update()
+                    # draw the green section
+                    pygame.draw.rect(window, objects.lblue,
+                                     [workingObject.x, workingObject.y, workingObject.bwidth, workingObject.height])
+                    # draw the red section
+                    pygame.draw.rect(window, objects.grey,
+                                     [workingObject.x + workingObject.bwidth, workingObject.y, workingObject.gwidth,
                                       workingObject.height])
 
         # update all loaded graphic objects

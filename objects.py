@@ -6,17 +6,19 @@ white = (255, 255, 255)
 red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)
+lblue = (110, 220, 255)
+grey = (225, 225, 225)
 # initialize window zize
 windowWidth = 0
 windowHeight = 0
+floor = 0
 # initialize text
 font = pygame.font.SysFont(None, 25)
 # set window width and height
 def init():
-    from temp import width,height
-    print(width,height)
-    return width,height
-windowWidth, windowHeight = init()
+    from temp import width,height,floor
+    return width,height,floor
+windowWidth, windowHeight, floor = init()
 
 # parent class for all graphical objects
 class objects:
@@ -60,6 +62,50 @@ class rectangle(objects):
         self.height = height
         self.colour = colour
 
+# entity stamina bars
+class staminaBar(objects):
+    # width based on the stamina the entity still has
+    swidth = 0
+    # width based on the stamina the entity has lost
+    gwidth = 0
+    # the height of the bar
+    height = 0
+    # the objects to associate with
+    entity = ""
+    object = ""
+
+    # configure attributes
+    def __init__(self, name, entity, object):
+        self.init("staminaBar", name, 0, 0, False, True)
+        self.entity = entity
+        self.object = object
+        # if the bar is the player's, make it thicker
+        if self.object.name == "player":
+            self.height = round(windowHeight/40)
+            # Move the bar to the top left of the screen
+            self.x = round(windowWidth / 50)
+            self.y = self.x + round(windowWidth / 30)
+        else:
+            self.height = round(windowHeight/60)
+        self.update()
+    # update position and widths
+    def update(self):
+        # Update position and bar width
+        # The width for the player's bar is much bigger than that of enemy bars.
+        if self.object.name == "player":
+            # set the player's healthBar's width based on window size
+            entityWidth = round(windowWidth * 2 / 5)
+        else:
+            # move the bar to just above the entity's position
+            self.x = self.object.x
+            self.y = self.object.y - round(windowHeight / 24) + round(windowHeight / 50)
+            # get the width of the entity's default frame
+            entityWidth = pygame.image.load("graphics/" + self.object.folder + "/stand/0" + ".PNG").get_width()
+        # set the width of the light blue section as a percentage of the max entity stamina and width of the entity
+        self.bwidth = self.entity.stamina / self.entity.maxStamina * entityWidth
+        # set width of the grey section
+        self.gwidth = entityWidth - self.bwidth
+
 # entity health bars
 class healthBar(objects):
     # width based on the health the entity still has
@@ -77,19 +123,33 @@ class healthBar(objects):
         self.init("healthBar", name, 0, 0, False, True)
         self.entity = entity
         self.object = object
-        self.height = round(windowHeight/50)
+        # if the bar is the player's, make it thicker
+        if self.object.name == "player":
+            self.height = round(windowHeight / 30)
+            # Move the bar to the top left of the screen
+            self.x = round(windowWidth / 50)
+            self.y = self.x
+        else:
+            self.height = round(windowHeight / 50)
         self.update()
+
     # update position and widths
     def update(self):
-        # get the width of the entity's default frame
-        entityWidth = pygame.image.load("graphics/" + self.object.folder + "/stand/0" + ".PNG").get_width()
+        # Update position and bar width
+        # The width for the player's bar is much bigger than that of enemy bars.
+        if self.object.name == "player":
+            # set the player's healthBar's width based on window size
+            entityWidth = round(windowWidth / 2)
+        else:
+            # move the bar to just above the entity's position
+            self.x = self.object.x
+            self.y = self.object.y - round(windowHeight / 24)
+            # get the width of the entity's default frame
+            entityWidth = pygame.image.load("graphics/" + self.object.folder + "/stand/0" + ".PNG").get_width()
         # set the width of the green section as a percentage of the max entity health and width of the entity
         self.gwidth = self.entity.health / self.entity.maxHealth * entityWidth
         # set width of the red section
         self.rwidth = entityWidth - self.gwidth
-        # update position
-        self.x = self.object.x
-        self.y = self.object.y - round(windowHeight / 24)
 
 # Text objects
 class text(objects):
@@ -181,11 +241,14 @@ class entity(objects):
             "graphics/" + self.folder + "/" + self.state + "/" + str(self.current) + ".PNG").get_height()
         # get the height of the new frame
         newHeight = pygame.image.load("graphics/" + self.folder + "/" + new + "/0.PNG").get_height()
-        # if the new height is less than the old height
-        if newHeight < oldHeight:
-            # move the image down to compensate
-            self.y += oldHeight - newHeight
+        # if the new feet are different to the old, move to compensate
+        # if self.y + oldHeight > self.y + newHeight:
+        #     self.y += (self.y + oldHeight) - (self.y + newHeight)
+        # elif self.y + oldHeight < self.y + newHeight:
+        #     self.y += (self.y + newHeight) - (self.y + oldHeight)
         # add the old state to the previous states array
+        if newHeight < oldHeight:
+            self.y += oldHeight - newHeight
         self.previous.append(self.state)
         # if the array holds more than 2 states
         if len(self.previous) > 2:
