@@ -13,15 +13,15 @@ def init(entities,windowWidth,windowHeight):
             enemy1Entity = currentEntity
     # create the player graphic object as an entity
     player = entity("player", round(windowWidth / 10), round(windowHeight / 2), False, True,
-                    [["walk", 4], ["stand", 1], ["jump", 1], ["drop", 1], ["knockback", 1], ["swing", 7],
-                     ["shieldBash", 7], ["swordDash", 1]], "stand", "player", "r")
+                    [["walk", 4], ["stand", 4], ["jump", 1], ["drop", 1], ["knockback", 1], ["swing", 7],
+                     ["shieldBash", 7], ["swordDash", 1],["pant", 4]], "stand", "player", "r")
     # assign the player's healthbar
     playerHealth = healthBar("playerHealth", playerEntity, player)
     # Assign the player's staminaBar
     playerStamina = staminaBar("playerStamina", playerEntity, player)
     # create the enemy1 graphic object as an entity
     enemy1 = entity("enemy1", round(windowHeight / 10 * 6), round(windowHeight / 2), False, True,
-                    [["walk", 4], ["stand", 1], ["jump", 1], ["drop", 1], ["knockback", 1], ["swing", 7]], "stand",
+                    [["walk", 4], ["stand", 4], ["jump", 1], ["drop", 1], ["knockback", 1], ["swing", 7],["pant", 4]], "stand",
                     "troll", "l")
     # assign enemy1's healthbar
     enemy1Health = healthBar("enemy1Health", enemy1Entity, enemy1)

@@ -12,7 +12,7 @@ def damage(giverObject, receiverObject, receiverEntity, damType, amount):
     # for physical damage...
     if damType == "physical":
         # Take health away from the receiver based on their armour
-        receiverEntity.health -= amount - (amount * (receiverEntity.armour / 100))
+        receiverEntity.health -= amount - round(amount * (receiverEntity.armour / 100))
 
 
 ##############################
@@ -37,8 +37,8 @@ class classes:
     # When completely depleted, the player is immobilized to pant for a small amount of time to allow stamina to
     # recharge.
     # Stamina is recharged naturally over time, or can be recharged instantly with sugary food.
-    stamina = 10
-    maxStamina = 10
+    stamina = 1000
+    maxStamina = 1000
     # Player walking speed
     speed = 0
     # Player jump height
@@ -111,6 +111,8 @@ class knight(classes):
             if playerObject.face == "r":
                 # add their starting width. This means that hits will be detected from on the right of the player, rather than inside of them.
                 self.startX += self.startWidth
+            # take a medium amount of stamina
+            self.stamina -= round(self.maxStamina * 0.3)
         # if it's not the first frame
         else:
             # load the current frame
@@ -177,6 +179,8 @@ class knight(classes):
             if playerObject.face == "r":
                 # add their starting width. This means that hits will be detected from on the right of the player, rather than inside of them.
                 self.startX += self.startWidth
+            # take a small amount of stamina
+            self.stamina -= round(self.maxStamina * 0.25)
         # if it's not the first frame
         else:
             playerImage = pygame.image.load("graphics/player/shieldBash/" + str(playerObject.current) + ".PNG")
@@ -238,6 +242,8 @@ class knight(classes):
             self.startWidth = playerImage.get_width()
             # reset the move progress
             self.progress = 5
+            # take a large amount of stamina
+            self.stamina -= round(self.maxStamina * 0.6)
         # if it's not the first frame and the progress is not 0
         elif self.progress > 0:
             # load the current frame
@@ -349,8 +355,8 @@ class enemy:
     startX = 0
     startWidth = 0
     # stamina works the same as player stamina
-    stamina = 10
-    maxStamina = 10
+    stamina = 1000
+    maxStamina = 1000
 
     # same as player dodge
     def dodge(self):
@@ -417,6 +423,7 @@ class troll(enemy):
             # compensate for image width
             if enemyObject.face == "r":
                 self.startX += self.startWidth
+            self.stamina -= round(self.maxStamina * 0.3)
         # if it's not the first frame
         else:
             # the player has not been hit yet

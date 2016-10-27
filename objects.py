@@ -1,5 +1,4 @@
 import pygame
-# import and initialize pygame. this is just to make text, as font is needed
 pygame.init()
 # initialize colours
 white = (255, 255, 255)
@@ -12,8 +11,6 @@ grey = (225, 225, 225)
 windowWidth = 0
 windowHeight = 0
 floor = 0
-# initialize text
-font = pygame.font.SysFont(None, 25)
 # set window width and height
 def init():
     from temp import width,height,floor
@@ -117,6 +114,8 @@ class healthBar(objects):
     # the objects to associate with
     entity = ""
     object = ""
+    # the max width of the bar
+    entityWidth = 0
 
     # configure attributes
     def __init__(self, name, entity, object):
@@ -129,27 +128,25 @@ class healthBar(objects):
             # Move the bar to the top left of the screen
             self.x = round(windowWidth / 50)
             self.y = self.x
+            # set the player's healthBar's width based on window size
+            self.entityWidth = round(windowWidth / 2)
         else:
+            # get the width of the entity's default frame
+            self.entityWidth = pygame.image.load("graphics/" + self.object.folder + "/stand/0" + ".PNG").get_width()
             self.height = round(windowHeight / 50)
         self.update()
 
     # update position and widths
     def update(self):
-        # Update position and bar width
-        # The width for the player's bar is much bigger than that of enemy bars.
-        if self.object.name == "player":
-            # set the player's healthBar's width based on window size
-            entityWidth = round(windowWidth / 2)
-        else:
+        # Update position and bar widths
+        if self.object.name != "player":
             # move the bar to just above the entity's position
             self.x = self.object.x
             self.y = self.object.y - round(windowHeight / 24)
-            # get the width of the entity's default frame
-            entityWidth = pygame.image.load("graphics/" + self.object.folder + "/stand/0" + ".PNG").get_width()
         # set the width of the green section as a percentage of the max entity health and width of the entity
-        self.gwidth = self.entity.health / self.entity.maxHealth * entityWidth
+        self.gwidth = self.entity.health / self.entity.maxHealth * self.entityWidth
         # set width of the red section
-        self.rwidth = entityWidth - self.gwidth
+        self.rwidth = self.entityWidth - self.gwidth
 
 # Text objects
 class text(objects):
@@ -159,16 +156,20 @@ class text(objects):
     colour = ""
     # whether to antialias the text
     antialiasing = True
+    # the text size
+    size = 0
 
     # configure attributes
-    def __init__(self, name, x, y, clickable, toRender, text, colour, antialiasing):
+    def __init__(self, name, x, y, clickable, toRender, text, colour, antialiasing, size):
         self.init("text", name, x, y, clickable, toRender)
         self.text = text
         self.colour = colour
+        self.size = size
         self.antialiasing = antialiasing
 
     # centre text around coordinates
     def centreText(self, centre):
+        font = pygame.font.SysFont(None, self.size)
         textSize = font.size(self.text)
         self.x = centre[0] - round(textSize[0] / 2)
         self.y = centre[1] - round(textSize[1] / 2)
@@ -235,20 +236,23 @@ class entity(objects):
 
     # change state
     def changeState(self, new):
-        # TODO: This is probably breaking animations too
         # get the height of the old frame
         oldHeight = pygame.image.load(
             "graphics/" + self.folder + "/" + self.state + "/" + str(self.current) + ".PNG").get_height()
         # get the height of the new frame
         newHeight = pygame.image.load("graphics/" + self.folder + "/" + new + "/0.PNG").get_height()
         # if the new feet are different to the old, move to compensate
+        if newHeight < oldHeight:
+            self.y += oldHeight - newHeight
+        elif newHeight > oldHeight:
+            self.y -= newHeight - oldHeight
         # if self.y + oldHeight > self.y + newHeight:
         #     self.y += (self.y + oldHeight) - (self.y + newHeight)
         # elif self.y + oldHeight < self.y + newHeight:
         #     self.y += (self.y + newHeight) - (self.y + oldHeight)
+        # if self.y + oldHeight == floor:
+        #     self.y = floor - newHeight
         # add the old state to the previous states array
-        if newHeight < oldHeight:
-            self.y += oldHeight - newHeight
         self.previous.append(self.state)
         # if the array holds more than 2 states
         if len(self.previous) > 2:
