@@ -28,4 +28,5 @@ def init(entities,windowWidth,windowHeight):
     # assign enemy1's staminaBar
     enemy1Stamina = staminaBar("enemy1Stamina", enemy1Entity, enemy1)
     # return all of the objects
-    return [player, enemy1, playerHealth, playerStamina, enemy1Health, enemy1Stamina]
+    killCount = killCounter("killCount",playerEntity)
+    return [player, enemy1, playerHealth, playerStamina, enemy1Health, enemy1Stamina, killCount]

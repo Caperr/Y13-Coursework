@@ -7,6 +7,7 @@ green = (0, 255, 0)
 blue = (0, 0, 255)
 lblue = (110, 220, 255)
 grey = (225, 225, 225)
+yellow = (255, 255, 0)
 # initialize window zize
 windowWidth = 0
 windowHeight = 0
@@ -173,6 +174,13 @@ class text(objects):
         textSize = font.size(self.text)
         self.x = centre[0] - round(textSize[0] / 2)
         self.y = centre[1] - round(textSize[1] / 2)
+
+class killCounter(objects):
+    entity = None
+
+    def __init__(self,name,entity):
+        self.init("killCounter",name,0,0,False,True)
+        self.entity = entity
 
 # images
 class image(objects):

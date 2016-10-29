@@ -1,6 +1,10 @@
 # Imports
 import random
 import pygame
+import temp
+
+windowWidth = temp.width
+windowHeight = temp.height
 
 # list of all enemy instances
 enemyObjects = []
@@ -52,6 +56,8 @@ class classes:
     level = 1
     # track the progress, in frames, of certain attacks/moves
     progress = 0
+    # The number of kills the player has achieved
+    kills = 0
 
     # run an attack or move.
     def attack(self, playerObject, playerEntity, windowWidth, move):
@@ -351,6 +357,10 @@ class enemy:
     currentAttack = "none"
     # current distance from the player
     distance = 0
+    # minimum distance for an attack to be triggered
+    minDistance = 0
+    # maximum distance for an attack to be triggered
+    maxDistance = 0
     # temporary variables for use in animation
     startX = 0
     startWidth = 0
@@ -375,6 +385,11 @@ class enemy:
         self.getHealth()
         self.setHealth()
         self.name = name
+        for attack in self.attacks:
+            if self.minDistance > attack[1]:
+                self.minDistance = attack[1]
+            elif self.maxDistance < attack[2]:
+                self.maxDistance = attack[2]
 
     # def die(self):
     #     del self
@@ -383,14 +398,8 @@ class enemy:
     def attack(self, playerObject, playerEntity, enemyObject, windowWidth, attack):
         # if the enemy isnt already attacking
         if enemyObject.state not in self.attackNames:
-            # if the attack delay isnt 0
-            if self.attackDelay > 0:
-                # take one away
-                self.attackDelay -= 1
-            # if the attack delay is 0
-            else:
-                # attack with initialization
-                attack[0](self, True, playerObject, playerEntity, enemyObject, windowWidth)
+            # attack with initialization
+            attack[0](self, True, playerObject, playerEntity, enemyObject, windowWidth)
         # if the enemy is already attacking
         else:
             # attack without initialization
@@ -468,7 +477,7 @@ class troll(enemy):
                 enemyObject.x = self.startX - self.startWidth
 
     # list of all attacks AND the range in which the enemy will ATTEMPT them
-    attacks = [[swing, 0, 220]]
+    attacks = [[swing, 0, round(windowWidth / 4)]]
     # list of all of the attack names
     attackNames = ["swing"]
 

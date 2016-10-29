@@ -2,11 +2,6 @@
 def gameLoop(currentScene):
     # Support libraries
     import pygame
-    # Scenes
-    # Game modules
-    import game
-    # Enemies
-    import troll
     # temp is used to transfer data
     import temp
 
@@ -24,15 +19,18 @@ def gameLoop(currentScene):
     windowHeight = bg.get_height()
 
     # place the floor 1 tenth of the window size above the bottom
-    floor = round((9 / 10) * windowHeight)
+    floor = round((43 / 50) * windowHeight)
 
     # transfer the dimensions to temp
     temp.width = windowWidth
     temp.height = windowHeight
     temp.floor = floor
 
-    # import the graphic objects
+    # game modules
     import objects
+    import game
+    # Enemies
+    import troll
 
     # if the scene is forest
     if currentScene == "forest":
@@ -269,13 +267,34 @@ def gameLoop(currentScene):
 
                         # if the entity is out of health
                         if currentEntity.health <= 0:
-                            # remove them from thr list of objects
+                            # remove them from the list of objects
                             sceneObjects.remove(currentObject)
                             entities.remove(currentEntity)
-                            # remove their health bar
+                            # remove their health/stamina bars
                             for current in sceneObjects:
                                 if current.name == currentObject.name + "Health" or current.name == currentObject.name + "Stamina":
                                     sceneObjects.remove(current)
+                            # if an enemy was defeated, add it to the players kill count
+                            print(sceneObjects)
+                            print(entities)
+                            if currentObject.name[0:5] == "enemy":
+                                playerEntity.kills += 1
+                                enemy1 = objects.entity("enemy1", round(windowHeight / 10 * 6), round(windowHeight / 2), False,
+                                                True,
+                                                [["walk", 4], ["stand", 4], ["jump", 1], ["drop", 1], ["knockback", 1],
+                                                 ["swing", 7], ["pant", 4]], "stand",
+                                                "troll", "l")
+                                # assign enemy1's healthbar
+                                enemy1Health = objects.healthBar("enemy1Health", currentEntity, currentObject)
+                                # assign enemy1's staminaBar
+                                enemy1Stamina = objects.staminaBar("enemy1Stamina", currentEntity, currentObject)
+                                sceneObjects.append(enemy1)
+                                sceneObjects.append(enemy1Health)
+                                sceneObjects.append((enemy1Stamina))
+                                # initialize enemy1
+                                enemy1 = game.troll("enemy1")
+                                game.enemyEntities.append(enemy1)
+                                entities.append(enemy1)
 
                         # load the entity's current frame
                         image = pygame.image.load(
@@ -506,6 +525,7 @@ def gameLoop(currentScene):
                     pygame.draw.rect(window, objects.red,
                                      [workingObject.x + workingObject.gwidth, workingObject.y, workingObject.rwidth,
                                       workingObject.height])
+
                     if workingObject.object.name == "player":
                         font = pygame.font.SysFont(None, round(workingObject.entityWidth * 25 / 320))
                     else:
@@ -529,6 +549,11 @@ def gameLoop(currentScene):
                     pygame.draw.rect(window, objects.grey,
                                      [workingObject.x + workingObject.bwidth, workingObject.y, workingObject.gwidth,
                                       workingObject.height])
+
+                elif workingObject.objectType == "killCounter":
+                    font = pygame.font.SysFont(None, round(windowWidth * 25 / 800))
+                    shownText = font.render("Kills: " + str(workingObject.entity.kills), True, objects.yellow)
+                    window.blit(shownText, [windowWidth - round(windowWidth / 100) - font.size("Kills: " + str(workingObject.entity.kills))[0], round(windowWidth / 100)])
 
         # update all loaded graphic objects
         pygame.display.flip()
