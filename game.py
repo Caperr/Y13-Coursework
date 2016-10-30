@@ -41,8 +41,8 @@ class classes:
     # When completely depleted, the player is immobilized to pant for a small amount of time to allow stamina to
     # recharge.
     # Stamina is recharged naturally over time, or can be recharged instantly with sugary food.
-    stamina = 1000
-    maxStamina = 1000
+    stamina = 100
+    maxStamina = 100
     # Player walking speed
     speed = 0
     # Player jump height
@@ -64,13 +64,13 @@ class classes:
         # if they are not already running the move, this must be the first frame.
         if playerObject.state not in self.attackNames:
             # run the move specified by the user, with initialization
-            self.attacks[move][0](self, True, playerObject, windowWidth)
+            self.attacks[move][0](True, playerObject, windowWidth)
             # store the attack being run for later
             self.currentAttack = self.attacks[move]
         # if it's not the first frame
         else:
             # run the move as normal without initialization
-            self.currentAttack[0](self, False, playerObject, windowWidth)
+            self.currentAttack[0](False, playerObject, windowWidth)
 
     # initialize player
     def init(self, name):
@@ -303,8 +303,12 @@ class knight(classes):
     # def block(self):
     #     pass
 
+    def setAttacks(self):
+        return [[self.swing, round(self.maxStamina * 0.3)], [self.shieldBash, round(self.maxStamina * 0.25)],
+         [self.swordDash, round(self.maxStamina * 0.6)]]
+
     # list of all of the attacks. used multi-dimensional array because I might need to pass more data in the future
-    attacks = [[swing], [shieldBash], [swordDash]]
+    attacks = []
     # list of all of the attack names
     attackNames = ["swing", "shieldBash", "swordDash"]
 
@@ -364,9 +368,9 @@ class enemy:
     # temporary variables for use in animation
     startX = 0
     startWidth = 0
-    # stamina works the same as player stamina
-    stamina = 1000
-    maxStamina = 1000
+    # placeholders to stop errors
+    stamina = 1
+    maxStamina = 1
 
     # same as player dodge
     def dodge(self):
@@ -432,7 +436,6 @@ class troll(enemy):
             # compensate for image width
             if enemyObject.face == "r":
                 self.startX += self.startWidth
-            self.stamina -= round(self.maxStamina * 0.3)
         # if it's not the first frame
         else:
             # the player has not been hit yet
@@ -588,7 +591,3 @@ def saveGame():
         f.write(str(data[i]) + "\n")
     # save and close the file
     f.close()
-
-##################################
-
-# Game

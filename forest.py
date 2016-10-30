@@ -25,8 +25,9 @@ def init(entities,windowWidth,windowHeight):
                     "troll", "l")
     # assign enemy1's healthbar
     enemy1Health = healthBar("enemy1Health", enemy1Entity, enemy1)
-    # assign enemy1's staminaBar
-    enemy1Stamina = staminaBar("enemy1Stamina", enemy1Entity, enemy1)
-    # return all of the objects
+    # the counter for the kills the player has
     killCount = killCounter("killCount",playerEntity)
-    return [player, enemy1, playerHealth, playerStamina, enemy1Health, enemy1Stamina, killCount]
+    # animation to display if the player attempts an action without the appropriate stamina
+    noStamina = animation("noStamina",round(windowWidth / 2),playerStamina.y,False,True,"noStamina",0,4)
+    # return all of the objects
+    return [player, enemy1, playerHealth, playerStamina, enemy1Health, killCount, noStamina]

@@ -43,9 +43,10 @@ def gameLoop(currentScene):
         # initialize player
         player = game.knight("player")
         entities = [player]
+        player.attacks = player.setAttacks()
 
         # update troll stats based on window size
-        game.troll.speed = round(windowWidth / 60)
+        game.troll.speed = round(windowWidth / 100)
         game.troll.jumpHeight = round(windowHeight / 10)
 
         # initialize enemy1
@@ -102,7 +103,8 @@ def gameLoop(currentScene):
     gameClock = pygame.time.Clock()
     FPS = 15
 
-
+    # track how many more times to show the noStamina animation
+    noStamina = 0
 
     key = ""
     # keys currently down
@@ -206,7 +208,10 @@ def gameLoop(currentScene):
                     found257 = True
                     # execute attack 1
                     if not disabled:
-                        playerEntity.attack(playerObject, playerEntity, windowWidth, 0)
+                        if playerEntity.stamina >= playerEntity.attacks[0][1]:
+                            playerEntity.attack(playerObject, playerEntity, windowWidth, 0)
+                        else:
+                            noStamina = 7
                     key = "KP1"
                     attackID = 0
                 # if it's KP2
@@ -214,7 +219,10 @@ def gameLoop(currentScene):
                     found258 = True
                     # execute attack 2
                     if not disabled:
-                        playerEntity.attack(playerObject, playerEntity, windowWidth, 1)
+                        if playerEntity.stamina >= playerEntity.attacks[1][1]:
+                            playerEntity.attack(playerObject, playerEntity, windowWidth, 1)
+                        else:
+                            noStamina = 7
                     key = "KP2"
                     attackID = 1
                 # if it's KP3
@@ -222,14 +230,20 @@ def gameLoop(currentScene):
                     found259 = True
                     # execute attack 3
                     if not disabled:
-                        playerEntity.attack(playerObject, playerEntity, windowWidth, 2)
+                        if playerEntity.stamina >= playerEntity.attacks[2][1]:
+                            playerEntity.attack(playerObject, playerEntity, windowWidth, 2)
+                        else:
+                            noStamina = 7
                     key = "KP3"
                     attackID = 2
                 if key == 261:
                     found261 = True
                     #block
                     if playerObject.state != "block" and not disabled:
-                        playerObject.changeState("block")
+                        if playerEntity.stamina >= round(currentEntity.maxStamina / (FPS * 5)):
+                            playerObject.changeState("block")
+                        else:
+                            noStamina = 7
                     key = "KP5"
             # if no keys were found
             if True not in [found32, found97, found100, found257, found258, found259, found261] and not disabled:
@@ -239,6 +253,15 @@ def gameLoop(currentScene):
 
         # entity actions
         for currentObject in sceneObjects:
+            if currentObject.name == "noStamina":
+                if noStamina > 0:
+                    if currentObject.current == currentObject.totalStates - 2:
+                        noStamina -= 1
+                    if currentObject.state == 0:
+                        currentObject.state = 1
+                elif currentObject.state == 1:
+                    currentObject.state = 0
+
             # if the current graphic object being scanned is an entity
             if currentObject.objectType == "entity":
                 # associate entities with their game class counterpart (e.g knight/mage for the player etc)
@@ -253,6 +276,7 @@ def gameLoop(currentScene):
                             if not (currentObject.state in ["jump", "drop", "knockback", "pant","block"] or currentObject.state in currentEntity.attackNames):
                                 # make them pant
                                 currentObject.changeState("pant")
+                                noStamina = 7
 
                         # if the entity is panting
                         if currentObject.state == "pant":
@@ -309,9 +333,11 @@ def gameLoop(currentScene):
 
                         # blocking
                         if currentObject.state == "block":
-                            if currentObject.name == "player" and not found261:
+                            if currentObject.name == "player" and (not found261 or playerEntity.stamina < round(currentEntity.maxStamina / (FPS * 5))):
                                 playerObject.changeState("stand")
                                 playerEntity.armour = playerEntity.maxArmour
+                                if playerEntity.stamina < round(currentEntity.maxStamina / (FPS * 5)):
+                                    noStamina = 7
                             else:
                                 currentEntity.stamina -= round(currentEntity.maxStamina / (FPS * 5))
                                 currentEntity.armour = 100
@@ -495,11 +521,12 @@ def gameLoop(currentScene):
                             workingObject.current) + ".PNG").convert_alpha()
                         # blit
                         window.blit(image, [workingObject.x, workingObject.y])
-                        # increment current image
-                        workingObject.current += 1
                         # reset current image id if the last image has been drawn
                         if workingObject.current == workingObject.totalStates - 1:
                             workingObject.current = 0
+                        else:
+                            # increment current image
+                            workingObject.current += 1
 
                 # if it's an entity. entities are used for associating the state of an entity with multiple animations
                 # entity animations are always running
