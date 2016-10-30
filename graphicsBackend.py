@@ -166,18 +166,11 @@ def gameLoop(currentScene):
         # if the player exists
         if playerObject is not None:
             # check if the player is in a state where keys should not be pressed
-            disabled = playerObject.state in ["jump", "drop", "knockback", "pant"] or playerObject.state in playerEntity.attackNames or playerEntity.stamina <= 0
+            disabled = playerObject.state in ["jump", "drop", "knockback", "pant","block"] or playerObject.state in playerEntity.attackNames or playerEntity.stamina <= 0
 
-        # default all recognised keys to not pressed
-        found32 = False
-        found97 = False
-        found100 = False
-        found257 = False
-        found258 = False
-        found259 = False
+            # default all recognised keys to not pressed
+            found32 = found97 = found100 = found257 = found258 = found259 = found261 = False
 
-        #if the player is disabled
-        if not disabled:
             # check through all keys currently down
             for key in heldKeys:
                 # if it's a
@@ -185,7 +178,7 @@ def gameLoop(currentScene):
                     # note that the key was found
                     found97 = True
                     # if the player isnt walking already
-                    if playerObject.state != "walk":
+                    if playerObject.state != "walk" and not disabled:
                         # walk
                         playerObject.changeState("walk")
                     # left
@@ -194,45 +187,55 @@ def gameLoop(currentScene):
                 if key == 100:
                     found100 = True
                     # walk right
-                    if playerObject.state != "walk":
+                    if playerObject.state != "walk" and not disabled:
                         playerObject.changeState("walk")
                     playerObject.face = "r"
                 # if both a and d are down
                 if found97 and found100:
                     # stand
-                    if playerObject.state != "stand":
+                    if playerObject.state != "stand" and not disabled:
                         playerObject.changeState("stand")
                 # if it's space
                 if key == 32:
                     found32 = True
                     # jump
-                    if playerObject.state != "jump":
+                    if playerObject.state != "jump" and not disabled:
                         playerObject.changeState("jump")
                 # if it's KP1
                 if key == 257:
                     found257 = True
                     # execute attack 1
-                    playerEntity.attack(playerObject, playerEntity, windowWidth, 0)
+                    if not disabled:
+                        playerEntity.attack(playerObject, playerEntity, windowWidth, 0)
                     key = "KP1"
                     attackID = 0
                 # if it's KP2
                 if key == 258:
                     found258 = True
                     # execute attack 2
-                    playerEntity.attack(playerObject, playerEntity, windowWidth, 1)
+                    if not disabled:
+                        playerEntity.attack(playerObject, playerEntity, windowWidth, 1)
                     key = "KP2"
                     attackID = 1
                 # if it's KP3
                 if key == 259:
                     found259 = True
                     # execute attack 3
-                    playerEntity.attack(playerObject, playerEntity, windowWidth, 2)
+                    if not disabled:
+                        playerEntity.attack(playerObject, playerEntity, windowWidth, 2)
                     key = "KP3"
                     attackID = 2
+                if key == 261:
+                    found261 = True
+                    #block
+                    if playerObject.state != "block" and not disabled:
+                        playerObject.changeState("block")
+                    key = "KP5"
             # if no keys were found
-            if True not in [found32, found97, found100, found257, found258, found259]:
+            if True not in [found32, found97, found100, found257, found258, found259, found261] and not disabled:
                 # stand
-                playerObject.changeState("stand")
+                if playerObject.state != "stand":
+                    playerObject.changeState("stand")
 
         # entity actions
         for currentObject in sceneObjects:
@@ -247,19 +250,19 @@ def gameLoop(currentScene):
                             # Make sure it isn't negative
                             currentEntity.stamina = 0
                             # If the entity is not disabled
-                            if not (currentObject.state in ["jump", "drop", "knockback", "pant"] or currentObject.state in currentEntity.attackNames):
+                            if not (currentObject.state in ["jump", "drop", "knockback", "pant","block"] or currentObject.state in currentEntity.attackNames):
                                 # make them pant
                                 currentObject.changeState("pant")
 
                         # if the entity is panting
                         if currentObject.state == "pant":
                             # if the entity's stamina has reached the minimum to stop
-                            if currentEntity.stamina >= round(currentEntity.maxStamina / 2):
+                            if currentEntity.stamina >= round(currentEntity.maxStamina / 4):
                                 # revert to standing
                                 currentObject.changeState("stand")
 
                         # add stamina naturally
-                        if not (currentObject.state in ["jump", "drop", "knockback"] or currentObject.state in currentEntity.attackNames):
+                        if not (currentObject.state in ["jump", "drop", "knockback","block"] or currentObject.state in currentEntity.attackNames):
                             if currentEntity.maxStamina - currentEntity.stamina >= round(currentEntity.maxStamina / (FPS * 5)):
                                 currentEntity.stamina += round(currentEntity.maxStamina / (FPS * 5))
                             else:
@@ -267,34 +270,25 @@ def gameLoop(currentScene):
 
                         # if the entity is out of health
                         if currentEntity.health <= 0:
-                            # remove them from the list of objects
-                            sceneObjects.remove(currentObject)
-                            entities.remove(currentEntity)
-                            # remove their health/stamina bars
-                            for current in sceneObjects:
-                                if current.name == currentObject.name + "Health" or current.name == currentObject.name + "Stamina":
-                                    sceneObjects.remove(current)
+                            if currentObject.name == "player":
+                                # remove them from the list of objects
+                                sceneObjects.remove(currentObject)
+                                entities.remove(currentEntity)
+                                # remove their health/stamina bars
+                                for current in sceneObjects:
+                                    if current.name == currentObject.name + "Health" or current.name == currentObject.name + "Stamina":
+                                        sceneObjects.remove(current)
                             # if an enemy was defeated, add it to the players kill count
-                            print(sceneObjects)
-                            print(entities)
                             if currentObject.name[0:5] == "enemy":
                                 playerEntity.kills += 1
-                                enemy1 = objects.entity("enemy1", round(windowHeight / 10 * 6), round(windowHeight / 2), False,
+                                currentObject.__init__("enemy1", round(windowHeight / 10 * 6), round(windowHeight / 2), False,
                                                 True,
                                                 [["walk", 4], ["stand", 4], ["jump", 1], ["drop", 1], ["knockback", 1],
                                                  ["swing", 7], ["pant", 4]], "stand",
                                                 "troll", "l")
-                                # assign enemy1's healthbar
-                                enemy1Health = objects.healthBar("enemy1Health", currentEntity, currentObject)
-                                # assign enemy1's staminaBar
-                                enemy1Stamina = objects.staminaBar("enemy1Stamina", currentEntity, currentObject)
-                                sceneObjects.append(enemy1)
-                                sceneObjects.append(enemy1Health)
-                                sceneObjects.append((enemy1Stamina))
                                 # initialize enemy1
-                                enemy1 = game.troll("enemy1")
-                                game.enemyEntities.append(enemy1)
-                                entities.append(enemy1)
+                                enemy1.getHealth()
+                                enemy1.setHealth()
 
                         # load the entity's current frame
                         image = pygame.image.load(
@@ -312,6 +306,18 @@ def gameLoop(currentScene):
                             currentObject.x = 0
                         elif currentObject.x + image.get_width() > windowWidth:
                             currentObject.x = windowWidth - image.get_width()
+
+                        # blocking
+                        if currentObject.state == "block":
+                            if currentObject.name == "player" and not found261:
+                                playerObject.changeState("stand")
+                                playerEntity.armour = playerEntity.maxArmour
+                            else:
+                                currentEntity.stamina -= round(currentEntity.maxStamina / (FPS * 5))
+                                currentEntity.armour = 100
+
+                        elif currentEntity.armour != currentEntity.maxArmour:
+                            currentEntity.armour = currentEntity.maxArmour
 
                         # gravity
                         # if the entity is not jumping, dropping or being knocked back AND the feet are above the floor

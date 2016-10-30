@@ -300,13 +300,13 @@ class knight(classes):
     # low stamina consumption
     # on 0 stamina, play a block break animation and take damage
     # may stun based on timing (maybe distance)? not sure.
-    def block(self):
-        pass
+    # def block(self):
+    #     pass
 
     # list of all of the attacks. used multi-dimensional array because I might need to pass more data in the future
-    attacks = [[swing], [shieldBash], [swordDash], [block]]
+    attacks = [[swing], [shieldBash], [swordDash]]
     # list of all of the attack names
-    attackNames = ["swing", "shieldBash", "swordDash", "block"]
+    attackNames = ["swing", "shieldBash", "swordDash"]
 
 
 # Mage template
@@ -410,7 +410,7 @@ class enemy:
 class troll(enemy):
     armour = 10
     maxArmour = armour
-    attackDelay = 0
+    attackDelay = 50
     attackDelayMax = 50
 
     # set base health
