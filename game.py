@@ -359,6 +359,8 @@ class enemy:
     attackDelay = 0
     # last attack scanned
     currentAttack = "none"
+    # The ID of the attack to be run
+    currentAttackID = None
     # current distance from the player
     distance = 0
     # minimum distance for an attack to be triggered
@@ -479,10 +481,121 @@ class troll(enemy):
             else:
                 enemyObject.x = self.startX - self.startWidth
 
+    # hit all frontal entities with your shield
+    # low physical damage, large knockback
+    # medium stamina consumption
+    def shieldBash(self, firstFrame, playerObject, playerEntity, enemyObject, windowWidth):
+        # if its the first frame
+        if firstFrame:
+            # update their graphic object
+            enemyObject.changeState("shieldBash")
+            # load the starting frame
+            enemyImage = pygame.image.load("graphics/" + enemyObject.folder + "/shieldBash/0.PNG")
+            # get their starting position and width
+            self.startX = enemyObject.x
+            self.startWidth = enemyImage.get_width()
+            # if the player is facing right
+            if enemyObject.face == "r":
+                # add their starting width. This means that hits will be detected from on the right of the player, rather than inside of them.
+                self.startX += self.startWidth
+        # if it's not the first frame
+        else:
+            enemyImage = pygame.image.load("graphics/" + enemyObject.folder + "/shieldBash/" + str(enemyObject.current) + ".PNG")
+            # check for collisions with player
+            hit = 0
+            playerImage = pygame.image.load("graphics/player/" + playerObject.state + "/" + str(
+                    playerObject.current) + ".PNG")
+            # if the player is facing left
+            if enemyObject.face == "l":
+                # See if the player and the enemy images intersect in any of the space the player extended into
+                if self.startX > playerObject.x + playerImage.get_width() > enemyObject.x or self.startX > playerObject.x > enemyObject.x or playerObject.x + playerImage.get_width() > enemyObject.x > playerObject.x:
+                    # if an intersection is found, the enemy was hit
+                    hit = 1
+                # move the player back to compensate for width gain
+                enemyObject.x = self.startX - (enemyImage.get_width() - self.startWidth)
+            # if the player is facing right
+            else:
+                # scan for intersections
+                if self.startX < playerObject.x < enemyObject.x + enemyImage.get_width() or self.startX < playerObject.x + playerImage.get_width() < enemyObject.x or playerObject.x < enemyObject.x + enemyImage.get_width() < playerObject.x + playerImage.get_width():
+                    hit = 1
+            # if the enemy was hit
+            if hit == 1:
+                # deal damage
+                damage(enemyObject, playerObject, playerEntity, "physical",
+                       round(1.2 * self.level + random.randint(-self.level, self.level)))
+                # knock them back
+                playerObject.changeState("knockback")
+                playerObject.knockbackDistance = round(windowWidth / 4)
+                playerObject.knockbackDistanceMax = enemyObject.knockbackDistance
+                playerObject.knockbackFace = enemyObject.face
+        # if the animation is complete
+        if enemyObject.current == enemyObject.totalStates - 1:
+            # revert to standing
+            enemyObject.changeState("stand")
+            # move back to original position
+            if enemyObject.face == "l":
+                enemyObject.x = self.startX
+            else:
+                enemyObject.x = self.startX - self.startWidth
+
+    # dash in a line in front of player with your sword. ensure movement keys do not interrupt.
+    # high physical damage, low knockback
+    # high stamina consumption
+    def swordDash(self, firstFrame, playerObject, playerEntity, enemyObject, windowWidth):
+        # if it's the first frame
+        if firstFrame:
+            # change graphic object state
+            enemyObject.changeState("swordDash")
+            # load the first frame
+            enemyImage = pygame.image.load("graphics/" + enemyObject.folder + "/stand/0.PNG")
+            # get starting width
+            self.startWidth = enemyImage.get_width()
+            # reset the move progress
+            self.progress = 5
+        # if it's not the first frame and the progress is not 0
+        elif self.progress > 0:
+            # load the current frame
+            enemyImage = pygame.image.load("graphics/" + enemyObject.folder + "/swordDash/" + str(enemyObject.current) + ".PNG")
+            # Check for collisions with player
+            hit = 0
+            # load this enemy's current frame
+            playerImage = pygame.image.load(
+                "graphics/player/" + playerObject.state + "/" + str(playerObject.current) + ".PNG")
+            # if the player is facing left
+            if enemyObject.face == "l":
+                # check for intersections in the width the player gained
+                if self.startX > playerObject.x + playerImage.get_width() > enemyObject.x or self.startX > playerObject.x > enemyObject.x or playerObject.x + playerImage.get_width() > enemyObject.x > playerObject.x:
+                    hit = 1
+            # if the player facing right
+            else:
+                # check for intersections
+                if self.startX < playerObject.x < enemyObject.x + enemyImage.get_width() or self.startX < playerObject.x + playerImage.get_width() < enemyObject.x or playerObject.x < enemyObject.x + enemyImage.get_width() < playerObject.x + playerImage.get_width():
+                    hit = 1
+            # if the enemy was hit
+            if hit == 1:
+                # deal damage
+                damage(enemyObject, playerObject, playerEntity, "physical",
+                       round(1.7 * self.level + random.randint(-self.level, self.level)))
+                # knock them back
+                playerObject.changeState("knockback")
+                playerObject.knockbackDistance = round(windowWidth / 15)
+                playerObject.knockbackDistanceMax = playerObject.knockbackDistance
+                playerObject.knockbackFace = enemyObject.face
+                # move the player
+                if enemyObject.face == "r":
+                    enemyObject.x += round(self.speed * 1.2)
+                else:
+                    enemyObject.x -= round(self.speed * 1.2)
+                # take one from the progress
+                self.progress -= 1
+        # if progress is done, revert to standing
+        else:
+            enemyObject.changeState("stand")
+
     # list of all attacks AND the range in which the enemy will ATTEMPT them
-    attacks = [[swing, 0, round(windowWidth / 4)]]
+    attacks = [[swing, round(windowWidth / 80, round(windowWidth / 4)],[shieldBash, 0, round(windowWidth / 80)],[swordDash, round(windowWidth / 4), round(windowWidth * 3/5)]]
     # list of all of the attack names
-    attackNames = ["swing"]
+    attackNames = ["swing","shieldBash","swordDash"]
 
 
 # giant spider template

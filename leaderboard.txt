@@ -5,3 +5,9 @@ testin 3
 wtfff 0
 doesitwork 3
 noitdoesnt 0
+ok 6
+aaadddfdfd 6
+k 4
+ff 0
+no 0
+s 1

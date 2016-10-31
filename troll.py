@@ -1,4 +1,5 @@
 # the troll's "AI" file - its reactions and behaviour
+import random
 
 def react(enemyObject, entities, playerObject, playerEntity, windowWidth):
     # find the troll's game object in the entities list
@@ -25,18 +26,33 @@ def react(enemyObject, entities, playerObject, playerEntity, windowWidth):
         if enemyEntity.attackDelay > 0:
             # take one away
             enemyEntity .attackDelay -= 1
+            # choose the next attack to execute
+            if enemyEntity.currentAttackID == None:
+                enemyEntity.currentAttackID = random.randint(0,len(enemyEntity.attackNames))
+                while x < enemyEntity.attacks[enemyEntity.currentAttackID][1]:
+                    enemyEntity.currentAttackID -= 1
+                    if enemyEntity.currentAttackID == -1:
+                        enemyEntity.currentAttackID = 0
+                        break
         # if the attack delay is 0
         else:
-            # read through the list of attacks
-            for attack in enemyEntity.attacks:
-                # if the distance between the enemy and the player is in the range defined in game.troll.attacks
-                if attack[1] <= enemyEntity.distance <= attack[2]:
-                    # execute the attack
-                    enemyEntity.attack(playerObject, playerEntity, enemyObject, windowWidth, attack)
-                    # update the enemy's current attack variable
-                    enemyEntity.currentAttack = attack
-                    # break from the loop, no more scanning needs to be done.
-                    return
+            if enemyEntity.currentAttackID == None:
+                enemyEntity.currentAttackID = random.randint(0,len(enemyEntity.attackNames))
+                while x < enemyEntity.attacks[enemyEntity.currentAttackID][1]:
+                    enemyEntity.currentAttackID -= 1
+                    if enemyEntity.currentAttackID == -1:
+                        enemyEntity.currentAttackID = 0
+                        break
+            if not (enemyEntity.maxDistance < enemyEntity.distance or enemyEntity.distance > enemyEntity.minDistance):
+                # read through the list of attacks
+                attack = enemyEntity.attacks[enemyEntity.currentAttackID]
+                # execute the attack
+                enemyEntity.attack(playerObject, playerEntity, enemyObject, windowWidth, attack)
+                # update the enemy's current attack variable
+                enemyEntity.currentAttack = attack
+                # break from the loop, no more scanning needs to be done.
+                return
+                
         if (enemyEntity.maxDistance < enemyEntity.distance or enemyEntity.distance > enemyEntity.minDistance) and enemyObject.state != "walk":
             enemyObject.changeState("walk")
 
