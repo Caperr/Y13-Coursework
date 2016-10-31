@@ -1,9 +1,15 @@
 # Start game loop
-def gameLoop(currentScene):
+def gameLoop(currentScene, optional):
     # Support libraries
     import pygame
+    import sys
     # temp is used to transfer data
     import temp
+
+    keys = [[pygame.K_a,"a"],[pygame.K_b,"b"],[pygame.K_c,"c"],[pygame.K_d,"d"],[pygame.K_e,"e"],[pygame.K_f,"f"],[pygame.K_g,"g"],
+            [pygame.K_h, "h"],[pygame.K_i,"i"],[pygame.K_j,"j"],[pygame.K_k,"k"],[pygame.K_l,"l"],[pygame.K_m,"m"],[pygame.K_n,"n"],
+            [pygame.K_o, "o"],[pygame.K_p,"p"],[pygame.K_q,"q"],[pygame.K_r,"r"],[pygame.K_s,"s"],[pygame.K_t,"t"],[pygame.K_u,"u"],
+            [pygame.K_v, "v"],[pygame.K_w,"w"],[pygame.K_x,"x"],[pygame.K_y,"y"],[pygame.K_z,"z"]]
 
     # the backdrop of the scene
     backdrop = ""
@@ -76,6 +82,16 @@ def gameLoop(currentScene):
         mainMenu.sceneObjects = mainMenu.init(windowWidth, windowHeight)
         sceneObjects = mainMenu.sceneObjects
 
+    elif currentScene == "newScore":
+        import newScore
+        newScore.sceneObjects = newScore.init(optional)
+        sceneObjects = newScore.sceneObjects
+
+    elif currentScene == "leaderboard":
+        import leaderboard
+        leaderboard.sceneObjects = leaderboard.init(optional)
+        sceneObjects = leaderboard.sceneObjects
+
     # find the player graphic object
     playerObject = None
     # by scanning through the list of graphic objects
@@ -106,18 +122,20 @@ def gameLoop(currentScene):
     # track how many more times to show the noStamina animation
     noStamina = 0
 
-    key = ""
     # keys currently down
     heldKeys = []
 
     # Game has is not quitting yet
     gameQuit = False
+    quitTimer = 30
+    # the number of kills the player got. only used on gameQuit
+    kills = 0
 
     # ID of the current attack being run
     attackID = 0
 
     # While the game is not quitting...
-    while not gameQuit:
+    while quitTimer > 0:
         # if the player exists
         if playerObject != None:
             # if the player is executing an attack
@@ -130,7 +148,7 @@ def gameLoop(currentScene):
             # If the quit button (X) has been pressed
             if event.type == pygame.QUIT:
                 # Quit the game
-                gameQuit = True
+                quitTimer = 0
             # If ANY mouse button has pressed
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # If it was left click
@@ -146,8 +164,11 @@ def gameLoop(currentScene):
                                 currentObject].height + 1:
                                 # Say so (will be used later)
                                 print("click " + sceneObjects[currentObject].name)
-                                return sceneObjects[currentObject].name
-                                    
+                                if currentScene == "newScore":
+                                    if len(sceneObjects[0].text) > 0:
+                                        return sceneObjects[0].text
+                                else:
+                                    return sceneObjects[currentObject].name
 
             # If a key has been pressed
             elif event.type == pygame.KEYDOWN:
@@ -162,6 +183,15 @@ def gameLoop(currentScene):
                     if current == event.key:
                         # remove it from the array of held keys
                         heldKeys.remove(current)
+
+        if currentScene == "newScore":
+            for key in heldKeys:
+                if key == pygame.K_BACKSPACE and len(sceneObjects[0].text) > 0:
+                    sceneObjects[0].text = sceneObjects[0].text[0:len(sceneObjects[0].text) - 1]
+                elif len(sceneObjects[0].text) < 10:
+                    for letter in keys:
+                        if letter[0] == key:
+                            sceneObjects[0].text = sceneObjects[0].text + letter[1]
 
         # default to disabled
         disabled = True
@@ -212,7 +242,6 @@ def gameLoop(currentScene):
                             playerEntity.attack(playerObject, playerEntity, windowWidth, 0)
                         else:
                             noStamina = 7
-                    key = "KP1"
                     attackID = 0
                 # if it's KP2
                 if key == 258:
@@ -223,7 +252,6 @@ def gameLoop(currentScene):
                             playerEntity.attack(playerObject, playerEntity, windowWidth, 1)
                         else:
                             noStamina = 7
-                    key = "KP2"
                     attackID = 1
                 # if it's KP3
                 if key == 259:
@@ -234,7 +262,6 @@ def gameLoop(currentScene):
                             playerEntity.attack(playerObject, playerEntity, windowWidth, 2)
                         else:
                             noStamina = 7
-                    key = "KP3"
                     attackID = 2
                 if key == 261:
                     found261 = True
@@ -244,7 +271,6 @@ def gameLoop(currentScene):
                             playerObject.changeState("block")
                         else:
                             noStamina = 7
-                    key = "KP5"
             # if no keys were found
             if True not in [found32, found97, found100, found257, found258, found259, found261] and not disabled:
                 # stand
@@ -295,13 +321,17 @@ def gameLoop(currentScene):
                         # if the entity is out of health
                         if currentEntity.health <= 0:
                             if currentObject.name == "player":
+                                # store the player's kills
+                                kills = playerEntity.kills
                                 # remove them from the list of objects
                                 sceneObjects.remove(currentObject)
                                 entities.remove(currentEntity)
                                 # remove their health/stamina bars
-                                for current in sceneObjects:
-                                    if current.name == currentObject.name + "Health" or current.name == currentObject.name + "Stamina":
-                                        sceneObjects.remove(current)
+                                # for current in sceneObjects:
+                                #     if current.name == currentObject.name + "Health" or current.name == currentObject.name + "Stamina":
+                                #         sceneObjects.remove(current)
+                                # start game quit
+                                gameQuit = True
                             # if an enemy was defeated, add it to the players kill count
                             if currentObject.name[0:5] == "enemy":
                                 playerEntity.kills += 1
@@ -313,6 +343,10 @@ def gameLoop(currentScene):
                                 # initialize enemy1
                                 enemy1.getHealth()
                                 enemy1.setHealth()
+
+                        # if game is quitting, take 1 from the timer
+                        if gameQuit:
+                            quitTimer -= 1
 
                         # load the entity's current frame
                         image = pygame.image.load(
@@ -470,6 +504,8 @@ def gameLoop(currentScene):
                                     # call their AI file
                                     troll.react(currentObject, entities, playerObject, playerEntity, windowWidth)
                                 # if they are attacking
+                                elif currentEntity.currentAttack == "none":
+                                    currentObject.changeState("stand")
                                 else:
                                     # continue the attack
                                     currentEntity.attack(playerObject, playerEntity, currentObject, windowWidth,
@@ -596,6 +632,8 @@ def gameLoop(currentScene):
 
     # outside of game loop, so the game must be ending. Quit pygame.
     pygame.quit()
+    if currentScene == "forest":
+        return kills
 #
 #
 # # start the game loop

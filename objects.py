@@ -1,6 +1,7 @@
 import pygame
 pygame.init()
 # initialize colours
+black = (0,0,0)
 white = (255, 255, 255)
 red = (255, 0, 0)
 green = (0, 255, 0)
@@ -63,7 +64,7 @@ class rectangle(objects):
 # entity stamina bars
 class staminaBar(objects):
     # width based on the stamina the entity still has
-    swidth = 0
+    bwidth = 0
     # width based on the stamina the entity has lost
     gwidth = 0
     # the height of the bar
@@ -170,7 +171,8 @@ class text(objects):
 
     # centre text around coordinates
     def centreText(self, centre):
-        font = pygame.font.SysFont(None, self.size)
+        pygame.font.init()
+        font = pygame.font.SysFont("font", self.size)
         textSize = font.size(self.text)
         self.x = centre[0] - round(textSize[0] / 2)
         self.y = centre[1] - round(textSize[1] / 2)
@@ -203,10 +205,11 @@ class animation(objects):
     totalStates = 0
 
     # configure attributes
-    def __init__(self, name, x, y, clickable, toRender, folder, state):
+    def __init__(self, name, x, y, clickable, toRender, folder, state, totalStates):
         self.init("animation", name, x, y, clickable, toRender)
         self.folder = folder
         self.state = state
+        self.totalStates = totalStates
 
 # entities. An object that has multiple animations it can switch between
 class entity(objects):

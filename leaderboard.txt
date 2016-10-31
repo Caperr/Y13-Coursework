@@ -1,0 +1,7 @@
+jasper 7
+ok 1
+whatagame 2
+testin 3
+wtfff 0
+doesitwork 3
+noitdoesnt 0

@@ -15,13 +15,13 @@ def init(windowWidth,windowHeight):
     newGameText = text("newGameText", 0, 0, False, True, "New Game", white, True, 25)
     # centre it in the newGame button
     newGameText.centreText((newGame.x + round(newGame.width / 2), newGame.y + round(newGame.height / 2)))
-    # the text to load a game.
-    loadGameText = text("loadGameText", 0, 0, False, True, "Load Game", white, True, 25)
-    # centre it in the load game button
-    loadGameText.centreText((loadGame.x + round(loadGame.width/2), loadGame.y + round(loadGame.height/2)))
+    # # the text to load a game.
+    # loadGameText = text("loadGameText", 0, 0, False, True, "Load Game", white, True, 25)
+    # # centre it in the load game button
+    # loadGameText.centreText((loadGame.x + round(loadGame.width/2), loadGame.y + round(loadGame.height/2)))
     # the text to quit the game.
     quitGameText = text("quitGameText", 0, 0, False, True, "Quit Game", white, True, 25)
     # centre it in the quit game button
     quitGameText.centreText((quitGame.x + round(quitGame.width / 2), quitGame.y + round(quitGame.height / 2)))
     # return all of the objects
-    return [newGame, loadGame, quitGame,newGameText,loadGameText,quitGameText]
+    return [newGame, quitGame,newGameText,quitGameText]
