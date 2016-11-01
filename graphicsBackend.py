@@ -502,7 +502,7 @@ def gameLoop(currentScene, optional):
                                 # if they are not attacking
                                 if not currentObject.state in currentEntity.attackNames:
                                     # call their AI file
-                                    troll.react(currentObject, entities, playerObject, playerEntity, windowWidth)
+                                    troll.react(currentObject, currentEntity, playerObject, playerEntity, windowWidth)
                                 # if they are attacking
                                 elif currentEntity.currentAttack == "none":
                                     currentObject.changeState("stand")
@@ -577,9 +577,9 @@ def gameLoop(currentScene, optional):
                     # blit
                     window.blit(image, [workingObject.x, workingObject.y])
                     # reset if last image is reached.
-                    if workingObject.current == workingObject.totalStates - 1:
+                    if workingObject.current >= workingObject.totalStates - 1:
                         workingObject.current = 0
-                    else:
+                    elif workingObject.totalStates > 1:
                         # increment current image
                         workingObject.current += 1
 

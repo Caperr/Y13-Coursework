@@ -276,10 +276,10 @@ class entity(objects):
 
     # update attributes after a state change etc
     def updateVars(self):
+        # reset the current image
+        self.current = 0
         # find the current state in the list of states
         for i in range(len(self.states)):
             if self.states[i][0] == self.state:
-                # reset the current image
-                self.current = 0
                 # get the total number of images
                 self.totalStates = self.states[i][1]

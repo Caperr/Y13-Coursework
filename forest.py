@@ -21,7 +21,7 @@ def init(entities,windowWidth,windowHeight):
     playerStamina = staminaBar("playerStamina", playerEntity, player)
     # create the enemy1 graphic object as an entity
     enemy1 = entity("enemy1", round(windowHeight / 10 * 6), round(windowHeight / 2), False, True,
-                    [["walk", 4], ["stand", 4], ["jump", 1], ["drop", 1], ["knockback", 1], ["swing", 7],["pant", 4]], "stand",
+                    [["walk", 4], ["stand", 4], ["jump", 1], ["drop", 1], ["knockback", 1], ["swing", 7],["shieldBash", 7], ["swordDash", 1],["pant", 4]], "stand",
                     "troll", "l")
     # assign enemy1's healthbar
     enemy1Health = healthBar("enemy1Health", enemy1Entity, enemy1)
