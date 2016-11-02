@@ -20,14 +20,14 @@ def react(enemyObject, enemyEntity, playerObject, playerEntity, windowWidth):
             # if the attack delay isnt 0
 
         if enemyEntity.currentAttackID is None:
-            # enemyEntity.currentAttackID = random.randint(0, len(enemyEntity.attackNames) - 1)
-            # originalAttack = enemyEntity.currentAttackID
-            # while enemyEntity.distance < enemyEntity.attacks[enemyEntity.currentAttackID][1]:
-            #     if enemyEntity.currentAttackID == -1:
-            #         enemyEntity.currentAttackID = originalAttack
-            #         break
-            #     enemyEntity.currentAttackID -= 1
-            enemyEntity.currentAttackID = 2
+            enemyEntity.currentAttackID = random.randint(0, len(enemyEntity.attackNames) - 1)
+            originalAttack = enemyEntity.currentAttackID
+            while enemyEntity.distance < enemyEntity.attacks[enemyEntity.currentAttackID][1]:
+                if enemyEntity.currentAttackID == -1:
+                    enemyEntity.currentAttackID = originalAttack
+                    break
+                enemyEntity.currentAttackID -= 1
+            # enemyEntity.currentAttackID = 2
 
         if enemyEntity.attackDelay > 0:
             # take one away
@@ -36,13 +36,12 @@ def react(enemyObject, enemyEntity, playerObject, playerEntity, windowWidth):
         elif enemyEntity.currentAttackID is not None:
             if enemyEntity.attacks[enemyEntity.currentAttackID][2] >= enemyEntity.distance >= enemyEntity.attacks[enemyEntity.currentAttackID][1]:
                 # read through the list of attacks
-                attack = enemyEntity.attacks[enemyEntity.currentAttackID]
+                enemyEntity.currentAttack = enemyEntity.attacks[enemyEntity.currentAttackID]
                 # execute the attack
-                enemyEntity.attack(playerObject, playerEntity, enemyObject, windowWidth, attack)
+                enemyEntity.attack(playerObject, playerEntity, enemyObject, windowWidth, enemyEntity.currentAttack)
                 # reset attack delay
                 enemyEntity.attackDelay = enemyEntity.attackDelayMax
                 # update the enemy's current attack variable
-                enemyEntity.currentAttack = attack
                 enemyEntity.currentAttackID = None
                 # break from the loop, no more scanning needs to be done.
                 return

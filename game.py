@@ -545,7 +545,7 @@ class troll(enemy):
             self.progress = 5
         # if it's not the first frame and the progress is not 0
         else:
-            while self.progress > 0:
+            if self.progress > 0:
                 # load the current frame
                 enemyImage = pygame.image.load("graphics/" + enemyObject.folder + "/swordDash/" + str(enemyObject.current) + ".PNG")
                 # Check for collisions with player
@@ -575,13 +575,14 @@ class troll(enemy):
                     playerObject.knockbackFace = enemyObject.face
                     # move the player
                 if enemyObject.face == "r":
-                    enemyObject.x += round(windowWidth * 3/80)
+                    enemyObject.x += round(windowWidth * 5/80)
                 else:
-                    enemyObject.x -= round(windowWidth * 3/80)
+                    enemyObject.x -= round(windowWidth * 5/80)
                 # take one from the progress
                 self.progress -= 1
-        # if progress is done, revert to standing
-        enemyObject.changeState("stand")
+            else:
+                # if progress is done, revert to standing
+                enemyObject.changeState("stand")
 
     # list of all attacks AND the range in which the enemy will ATTEMPT them
     attacks = [[shieldBash, 0, round(windowWidth * 5/24)],[swing, round(windowWidth * 5/24), round(windowWidth / 4)],[swordDash, round(windowWidth / 4), round(windowWidth * 3/5)]]
