@@ -521,7 +521,6 @@ class troll(enemy):
         # if the animation is complete
         if enemyObject.current == enemyObject.totalStates - 1:
             # revert to standing
-            print("ok")
             enemyObject.changeState("stand")
             # move back to original position
             if enemyObject.face == "l":

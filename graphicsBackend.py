@@ -59,6 +59,9 @@ def gameLoop(currentScene, optional):
         enemy1 = game.troll("enemy1")
         game.enemyEntities.append(enemy1)
 
+##        enemy2 = game.troll("enemy2")
+##        game.enemyEntities.append(enemy2)
+
         # add all game objects to entities array
         for enemy in game.enemyEntities:
             entities.append(enemy)
@@ -335,14 +338,11 @@ def gameLoop(currentScene, optional):
                             # if an enemy was defeated, add it to the players kill count
                             if currentObject.name[0:5] == "enemy":
                                 playerEntity.kills += 1
-                                currentObject.__init__("enemy1", round(windowHeight / 10 * 6), round(windowHeight / 2), False,
-                                                True,
-                                                [["walk", 4], ["stand", 4], ["jump", 1], ["drop", 1], ["knockback", 1],
-                                                 ["swing", 7], ["pant", 4]], "stand",
-                                                "troll", "l")
-                                # initialize enemy1
-                                enemy1.getHealth()
-                                enemy1.setHealth()
+                                # initialize the enemy
+                                currentObject.__init__(currentObject.name, round(windowHeight / 10 * 6), round(windowHeight / 2), currentObject.clickable,
+                                                currentObject.toRender,currentObject.states, "stand",currentObject.folder, "l")
+                                currentEntity.getHealth()
+                                currentEntity.setHealth()
 
                         # if game is quitting, take 1 from the timer
                         if gameQuit:

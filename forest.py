@@ -11,6 +11,9 @@ def init(entities,windowWidth,windowHeight):
             playerEntity = currentEntity
         elif currentEntity.name == "enemy1":
             enemy1Entity = currentEntity
+        elif currentEntity.name == "enemy2":
+            enemy2Entity = currentEntity
+
     # create the player graphic object as an entity
     player = entity("player", round(windowWidth / 10), round(windowHeight / 2), False, True,
                     [["walk", 4], ["stand", 4], ["jump", 1], ["drop", 1], ["knockback", 1], ["swing", 7],
@@ -29,5 +32,13 @@ def init(entities,windowWidth,windowHeight):
     killCount = killCounter("killCount",playerEntity)
     # animation to display if the player attempts an action without the appropriate stamina
     noStamina = animation("noStamina",round(windowWidth / 2),playerStamina.y,False,True,"noStamina",0,4)
+
+##    # create the enemy1 graphic object as an entity
+##    enemy2 = entity("enemy2", round(windowHeight / 10 * 8), round(windowHeight / 2), False, True,
+##                    [["walk", 4], ["stand", 4], ["jump", 1], ["drop", 1], ["knockback", 1], ["swing", 7],["shieldBash", 7], ["swordDash", 1],["pant", 4]], "stand",
+##                    "troll", "l")
+##    # assign enemy1's healthbar
+##    enemy2Health = healthBar("enemy2Health", enemy2Entity, enemy2)
+    
     # return all of the objects
-    return [player, enemy1, playerHealth, playerStamina, enemy1Health, killCount, noStamina]
+    return [player, playerHealth, playerStamina, enemy1, enemy1Health, killCount, noStamina]
