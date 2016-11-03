@@ -1,3 +1,5 @@
+import random
+
 # Start game loop
 def gameLoop(currentScene, optional):
     # Support libraries
@@ -55,12 +57,17 @@ def gameLoop(currentScene, optional):
         game.troll.speed = round(windowWidth / 100)
         game.troll.jumpHeight = round(windowHeight / 10)
 
+        game.enemyEntities = []
         # initialize enemy1
         enemy1 = game.troll("enemy1")
+        enemy1.__init__("enemy1")
         game.enemyEntities.append(enemy1)
 
 ##        enemy2 = game.troll("enemy2")
 ##        game.enemyEntities.append(enemy2)
+
+##        enemy3 = game.troll("enemy3")
+##        game.enemyEntities.append(enemy3)
 
         # add all game objects to entities array
         for enemy in game.enemyEntities:
@@ -151,7 +158,8 @@ def gameLoop(currentScene, optional):
             # If the quit button (X) has been pressed
             if event.type == pygame.QUIT:
                 # Quit the game
-                quitTimer = 0
+                pygame.quit()
+                return "quitGame"
             # If ANY mouse button has pressed
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # If it was left click
@@ -166,7 +174,9 @@ def gameLoop(currentScene, optional):
                                     event.pos[1] < sceneObjects[currentObject].y + sceneObjects[
                                 currentObject].height + 1:
                                 # Say so (will be used later)
-                                print("click " + sceneObjects[currentObject].name)
+                                if sceneObjects[currentObject].name == "quitGame":
+                                    pygame.quit()
+                                    return "quitGame"
                                 if currentScene == "newScore":
                                     if len(sceneObjects[0].text) > 0:
                                         return sceneObjects[0].text
@@ -213,18 +223,20 @@ def gameLoop(currentScene, optional):
                     # note that the key was found
                     found97 = True
                     # if the player isnt walking already
-                    if playerObject.state != "walk" and not disabled:
+                    if not disabled:
+                        if playerObject.state != "walk":
                         # walk
-                        playerObject.changeState("walk")
-                    # left
-                    playerObject.face = "l"
+                            playerObject.changeState("walk")
+                        # left
+                        playerObject.face = "l"
                 # if it's d
                 if key == 100:
                     found100 = True
                     # walk right
-                    if playerObject.state != "walk" and not disabled:
-                        playerObject.changeState("walk")
-                    playerObject.face = "r"
+                    if not disabled:
+                        if playerObject.state != "walk":
+                            playerObject.changeState("walk")
+                        playerObject.face = "r"
                 # if both a and d are down
                 if found97 and found100:
                     # stand
@@ -338,8 +350,21 @@ def gameLoop(currentScene, optional):
                             # if an enemy was defeated, add it to the players kill count
                             if currentObject.name[0:5] == "enemy":
                                 playerEntity.kills += 1
+                                position = 0
+                                distance = 0
+                                while distance < round(windowWidth/3):
+                                    position = random.randint(0,windowWidth)
+                                    # if the player is on the right of the enemy
+                                    if playerObject.x > position:
+                                        # get the distance between the enemy and the player
+                                        distance = playerObject.x - position
+                                    # if the player is on the left of the enemy
+                                    else:
+                                        # get the distance between the enemy and the player
+                                        distance = position - playerObject.x
+                                # if the attack delay isnt 0
                                 # initialize the enemy
-                                currentObject.__init__(currentObject.name, round(windowHeight / 10 * 6), round(windowHeight / 2), currentObject.clickable,
+                                currentObject.__init__(currentObject.name, position, round(windowHeight / 2), currentObject.clickable,
                                                 currentObject.toRender,currentObject.states, "stand",currentObject.folder, "l")
                                 currentEntity.getHealth()
                                 currentEntity.setHealth()
@@ -369,12 +394,12 @@ def gameLoop(currentScene, optional):
                         if currentObject.state == "block":
                             if currentObject.name == "player" and (not found261 or playerEntity.stamina < round(currentEntity.maxStamina / (FPS * 5))):
                                 playerObject.changeState("stand")
-                                playerEntity.armour = playerEntity.maxArmour
+##                                playerEntity.armour = playerEntity.maxArmour
                                 if playerEntity.stamina < round(currentEntity.maxStamina / (FPS * 5)):
                                     noStamina = 7
                             else:
                                 currentEntity.stamina -= round(currentEntity.maxStamina / (FPS * 5))
-                                currentEntity.armour = 100
+##                                currentEntity.armour = 100
 
                         elif currentEntity.armour != currentEntity.maxArmour:
                             currentEntity.armour = currentEntity.maxArmour

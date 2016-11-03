@@ -138,14 +138,16 @@ class knight(classes):
                             # See if the player and the enemy images intersect in any of the space the player extended into
                             if self.startX > enemyObject.x + enemyImage.get_width() > playerObject.x or self.startX > enemyObject.x > playerObject.x or enemyObject.x + enemyImage.get_width() > playerObject.x > enemyObject.x:
                                 # if an intersection is found, the enemy was hit on this frame
-                                hit = 1
+                                if not (enemyObject.state == "block" and enemyObject.face != playerObject.face):
+                                    hit = 1
                             # Move the player back to compensate for the extending image
                             playerObject.x = self.startX - (playerImage.get_width() - self.startWidth)
                         # if the player is facing right
                         else:
                             # check for intersections
                             if self.startX < enemyObject.x < playerObject.x + playerImage.get_width() or self.startX < enemyObject.x + enemyImage.get_width() < playerObject.x or enemyObject.x < playerObject.x + playerImage.get_width() < enemyObject.x + enemyImage.get_width():
-                                hit = 1
+                                if not (enemyObject.state == "block" and enemyObject.face != playerObject.face):
+                                    hit = 1
                         # if the enemy was hit
                         if hit == 1:
                             # take away health
@@ -206,14 +208,16 @@ class knight(classes):
                             # See if the player and the enemy images intersect in any of the space the player extended into
                             if self.startX > enemyObject.x + enemyImage.get_width() > playerObject.x or self.startX > enemyObject.x > playerObject.x or enemyObject.x + enemyImage.get_width() > playerObject.x > enemyObject.x:
                                 # if an intersection is found, the enemy was hit
-                                hit = 1
+                                if not (enemyObject.state == "block" and enemyObject.face != playerObject.face):
+                                    hit = 1
                             # move the player back to compensate for width gain
                             playerObject.x = self.startX - (playerImage.get_width() - self.startWidth)
                         # if the player is facing right
                         else:
                             # scan for intersections
                             if self.startX < enemyObject.x < playerObject.x + playerImage.get_width() or self.startX < enemyObject.x + enemyImage.get_width() < playerObject.x or enemyObject.x < playerObject.x + playerImage.get_width() < enemyObject.x + enemyImage.get_width():
-                                hit = 1
+                                if not (enemyObject.state == "block" and enemyObject.face != playerObject.face):
+                                    hit = 1
                         # if the enemy was hit
                         if hit == 1:
                             # deal damage
@@ -269,12 +273,14 @@ class knight(classes):
                         if playerObject.face == "l":
                             # check for intersections in the width the player gained
                             if self.startX > enemyObject.x + enemyImage.get_width() > playerObject.x or self.startX > enemyObject.x > playerObject.x or enemyObject.x + enemyImage.get_width() > playerObject.x > enemyObject.x:
-                                hit = 1
+                                if not (enemyObject.state == "block" and enemyObject.face != playerObject.face):
+                                    hit = 1
                         # if the player facing right
                         else:
                             # check for intersections
                             if self.startX < enemyObject.x < playerObject.x + playerImage.get_width() or self.startX < enemyObject.x + enemyImage.get_width() < playerObject.x or enemyObject.x < playerObject.x + playerImage.get_width() < enemyObject.x + enemyImage.get_width():
-                                hit = 1
+                                if not (enemyObject.state == "block" and enemyObject.face != playerObject.face):
+                                    hit = 1
                         # if the enemy was hit
                         if hit == 1:
                             # deal damage
@@ -444,14 +450,16 @@ class troll(enemy):
             if enemyObject.face == "l":
                 # check for intersections with the player image on the left of the enemy, with the width the enemy gained
                 if self.startX > playerObject.x + playerImage.get_width() > enemyObject.x or self.startX > playerObject.x > enemyObject.x or playerObject.x + playerImage.get_width() > enemyObject.x > playerObject.x:
-                    hit = 1
+                    if not (playerObject.state == "block" and enemyObject.face != playerObject.face):
+                        hit = 1
                 # move back to compensate for width gain
                 enemyObject.x = self.startX - (enemyImage.get_width() - self.startWidth)
             # if the enemy is facing right
             else:
                 # check for intersections
                 if self.startX < playerObject.x < enemyObject.x + enemyImage.get_width() or self.startX < playerObject.x + playerImage.get_width() < enemyObject.x or playerObject.x < enemyObject.x + enemyImage.get_width() < playerObject.x + playerImage.get_width():
-                    hit = 1
+                    if not (playerObject.state == "block" and enemyObject.face != playerObject.face):
+                        hit = 1
             # if the player was hit
             if hit == 1:
                 # deal physical damage
@@ -500,14 +508,16 @@ class troll(enemy):
                 # See if the player and the enemy images intersect in any of the space the enemy extended into
                 if self.startX > playerObject.x + playerImage.get_width() > enemyObject.x or self.startX > playerObject.x > enemyObject.x or playerObject.x + playerImage.get_width() > enemyObject.x > playerObject.x:
                     # if an intersection is found, the player was hit
-                    hit = 1
+                    if not (playerObject.state == "block" and enemyObject.face != playerObject.face):
+                        hit = 1
                 # move the enemy back to compensate for width gain
                 enemyObject.x = self.startX - (enemyImage.get_width() - self.startWidth)
             # if the player is facing right
             else:
                 # scan for intersections
                 if self.startX < playerObject.x < enemyObject.x + enemyImage.get_width() or self.startX < playerObject.x + playerImage.get_width() < enemyObject.x or playerObject.x < enemyObject.x + enemyImage.get_width() < playerObject.x + playerImage.get_width():
-                    hit = 1
+                    if not (playerObject.state == "block" and enemyObject.face != playerObject.face):
+                        hit = 1
             # if the enemy was hit
             if hit == 1:
                 # deal damage
@@ -556,12 +566,14 @@ class troll(enemy):
                 if enemyObject.face == "l":
                     # check for intersections in the width the player gained
                     if self.startX > playerObject.x + playerImage.get_width() > enemyObject.x or self.startX > playerObject.x > enemyObject.x or playerObject.x + playerImage.get_width() > enemyObject.x > playerObject.x:
-                        hit = 1
+                        if not (playerObject.state == "block" and enemyObject.face != playerObject.face):
+                            hit = 1
                 # if the player facing right
                 else:
                     # check for intersections
                     if self.startX < playerObject.x < enemyObject.x + enemyImage.get_width() or self.startX < playerObject.x + playerImage.get_width() < enemyObject.x or playerObject.x < enemyObject.x + enemyImage.get_width() < playerObject.x + playerImage.get_width():
-                        hit = 1
+                        if not (playerObject.state == "block" and enemyObject.face != playerObject.face):
+                            hit = 1
                 # if the enemy was hit
                 if hit == 1:
                     # deal damage

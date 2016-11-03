@@ -34,7 +34,11 @@ while go == "playGame":
         scores = []
         # graphicsBackend.gameLoop("forest", None)
         score = graphicsBackend.gameLoop("forest", None)
+        if score == "quitGame":
+            break
         name = graphicsBackend.gameLoop("newScore",score)
+        if score == "quitGame":
+            break
         f = open("leaderboard.txt","a")
         f.write(name + " " + str(score) + "\n")
         f.close()
