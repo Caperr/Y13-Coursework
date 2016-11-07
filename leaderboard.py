@@ -23,7 +23,7 @@ def init(scores):
     if len(scores) > 8:
         topScores9 = "9: " + scores[8][0] + " - " + str(scores[8][1])
     if len(scores) > 9:
-        topScores10 = "10: " + score[9][0] + " - " + str(scores[9][1])
+        topScores10 = "10: " + scores[9][0] + " - " + str(scores[9][1])
 
     line1 = text("line1", 80, 90, False, True, topScores1, black, True, 40)
     line2 = text("line1", 80, line1.y + 30, False, True, topScores2, black, True, 40)

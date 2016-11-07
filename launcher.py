@@ -50,6 +50,10 @@ while go == "playGame":
         scores = bubblesort(scores)[::-1]
         if len(scores) > 10:
             scores = scores[0:9]
+        f = open("leaderboard.txt","w")
+        for score in scores:
+            f.write(score[0] + " " + score[1] + "\n")
+        f.close()
         go = graphicsBackend.gameLoop("leaderboard",scores)
     else:
         go = ""

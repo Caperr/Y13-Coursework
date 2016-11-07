@@ -6,11 +6,11 @@ sceneObjects = []
 # initialize graphical objects based on window size
 def init(windowWidth,windowHeight):
     # the button for a new game. It is clickable
-    newGame = rectangle("newGame", round(windowWidth * 3/8), round(windowHeight / 4), True, True, round(windowWidth / 4), round(windowHeight / 6), red)
+    newGame = rectangle("newGame", round(windowWidth / 2), round(windowHeight / 4), True, True, round(windowWidth / 4), round(windowHeight / 4), red)
     # the button to load a game. It is clickable
-    loadGame = rectangle("loadGame", round(windowWidth * 3/8), round(windowHeight * 27/60), True, True, round(windowWidth / 4), round(windowHeight / 6), green)
+    # loadGame = rectangle("loadGame", round(windowWidth * 3/8), round(windowHeight * 27/60), True, True, round(windowWidth / 4), round(windowHeight / 6), green)
     # the button to quit the game. It is clickable
-    quitGame = rectangle("quitGame", round(windowWidth * 3/8), round(windowHeight * 39/60), True, True, round(windowWidth / 4), round(windowHeight / 12), blue)
+    quitGame = rectangle("quitGame", round(windowWidth / 2), round(windowHeight * 8/15), True, True, round(windowWidth / 4), round(windowHeight / 6), blue)
     # the text for a new game.
     newGameText = text("newGameText", 0, 0, False, True, "New Game", white, True, 25)
     # centre it in the newGame button
@@ -24,4 +24,5 @@ def init(windowWidth,windowHeight):
     # centre it in the quit game button
     quitGameText.centreText((quitGame.x + round(quitGame.width / 2), quitGame.y + round(quitGame.height / 2)))
     # return all of the objects
-    return [newGame, quitGame,newGameText,quitGameText]
+    playerAnimation = animation("playerAnimation",round(windowWidth / 8),round(windowWidth * 2/5),False,True,"player/stand",1,4)
+    return [newGame, quitGame,newGameText,quitGameText,playerAnimation]

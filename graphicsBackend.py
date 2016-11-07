@@ -368,6 +368,7 @@ def gameLoop(currentScene, optional):
                                                 currentObject.toRender,currentObject.states, "stand",currentObject.folder, "l")
                                 currentEntity.getHealth()
                                 currentEntity.setHealth()
+                                FPS += 2
 
                         # if game is quitting, take 1 from the timer
                         if gameQuit:
@@ -580,6 +581,23 @@ def gameLoop(currentScene, optional):
                         # load its current image, taken from the images array inside of its folder
                         image = pygame.image.load("graphics/" + workingObject.folder + "/" + str(
                             workingObject.current) + ".PNG").convert_alpha()
+
+                        # get the height of the old frame
+                        if workingObject.totalStates > 1:
+                            if workingObject.current == 0:
+                                oldHeight = pygame.image.load(
+                                    "graphics/" + workingObject.folder + "/" + str(workingObject.totalStates - 1) + ".PNG").get_height()
+                            else:
+                                oldHeight = pygame.image.load(
+                                    "graphics/" + workingObject.folder + "/" + str(workingObject.current - 1) + ".PNG").get_height()
+                            newHeight = image.get_height()
+
+                            # if the new feet are different to the old, move to compensate
+                            if newHeight < oldHeight:
+                                workingObject.y += oldHeight - newHeight
+                            elif newHeight > oldHeight:
+                                workingObject.y -= newHeight - oldHeight
+
                         # blit
                         window.blit(image, [workingObject.x, workingObject.y])
                         # reset current image id if the last image has been drawn

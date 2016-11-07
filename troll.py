@@ -1,3 +1,7 @@
+# TODO: Keep a record of the player's attacks and react. e.g swordDash if player is constantly shieldBashing
+# TODO: Randomly choose whether to block a player attack or not
+# TODO: Add difficulty setting -> e.g increase base troll difficulty, FPS, number of trolls
+
 # the troll's "AI" file - its reactions and behaviour
 import random
 
