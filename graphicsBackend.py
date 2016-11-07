@@ -368,7 +368,7 @@ def gameLoop(currentScene, optional):
                                                 currentObject.toRender,currentObject.states, "stand",currentObject.folder, "l")
                                 currentEntity.getHealth()
                                 currentEntity.setHealth()
-                                FPS += 2
+                                # FPS += 2
 
                         # if game is quitting, take 1 from the timer
                         if gameQuit:
