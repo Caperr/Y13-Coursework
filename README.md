@@ -1,6 +1,7 @@
 # Y13-Coursework
 
 TODO:
+- make it possible to go to leaderboard and back from mainMenu
 - add enemy jumps after random number of frames
 - finish mainMenu
 - random item spawns
