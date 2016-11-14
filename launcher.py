@@ -28,8 +28,11 @@ def swap(A, x, y):
 go = "playGame"
 
 while go == "playGame":
-    result = graphicsBackend.gameLoop("mainMenu",None)
-
+    result = "menu"
+    while result in ["menu","controls"]:
+        result = graphicsBackend.gameLoop("mainMenu",None)
+        if result == "controls":
+            result = graphicsBackend.gameLoop("controls",None)
     if result == "newGame":
         scores = []
         # graphicsBackend.gameLoop("forest", None)
@@ -48,7 +51,7 @@ while go == "playGame":
             scores.append(read[0:len(read) - 1].split(" "))
         f.close()
         scores = bubblesort(scores)[::-1]
-        if len(scores) > 10:
+        if len(scores) > 9:
             scores = scores[0:9]
         f = open("leaderboard.txt","w")
         for score in scores:

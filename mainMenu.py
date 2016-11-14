@@ -1,4 +1,4 @@
-# mport all graphical objects
+# import all graphical objects
 from objects import *
 # the list of all of the objects in the scene
 sceneObjects = []
@@ -24,5 +24,9 @@ def init(windowWidth,windowHeight):
     # centre it in the quit game button
     quitGameText.centreText((quitGame.x + round(quitGame.width / 2), quitGame.y + round(quitGame.height / 2)))
     # return all of the objects
+    controls = rectangle("controls", round(windowWidth / 2), round(windowHeight * 11/15), True, True, round(windowWidth / 4), round(windowHeight / 8), green)
+    controlsText = text("controlsText", 0, 0, False, True, "Controls", white, True, 25)
+    # centre it in the quit game button
+    controlsText.centreText((controls.x + round(controls.width / 2), controls.y + round(controls.height / 2)))
     playerAnimation = animation("playerAnimation",round(windowWidth / 8),round(windowWidth * 2/5),False,True,"player/stand",1,4)
-    return [newGame, quitGame,newGameText,quitGameText,playerAnimation]
+    return [newGame, quitGame,newGameText,quitGameText,playerAnimation,controls,controlsText]

@@ -13,6 +13,19 @@ def gameLoop(currentScene, optional):
             [pygame.K_o, "o"],[pygame.K_p,"p"],[pygame.K_q,"q"],[pygame.K_r,"r"],[pygame.K_s,"s"],[pygame.K_t,"t"],[pygame.K_u,"u"],
             [pygame.K_v, "v"],[pygame.K_w,"w"],[pygame.K_x,"x"],[pygame.K_y,"y"],[pygame.K_z,"z"]]
 
+    #The current control scheme. Name is the name of the control, key is the key assigned, found is whether the key was
+    #found when iterating through heldKeys
+    #[[name,key,found]]
+    controlScheme = [["l",pygame.K_a,False],["r",pygame.K_d,False],["j",pygame.K_SPACE,False],["1",pygame.K_SEMICOLON,False],["2",39,False],["3",pygame.K_BACKSLASH,False],["b",pygame.K_LEFTBRACKET,False]]
+    cL = 0
+    cR = 1
+    cJ = 2
+    c1 = 3
+    c2 = 4
+    c3 = 5
+    cB = 6
+
+
     # the backdrop of the scene
     backdrop = ""
     # Later used to load the backdrop
@@ -91,6 +104,13 @@ def gameLoop(currentScene, optional):
         # initialize the graphic objects based on window size
         mainMenu.sceneObjects = mainMenu.init(windowWidth, windowHeight)
         sceneObjects = mainMenu.sceneObjects
+
+    elif currentScene == "controls":
+        # import the module
+        import controls
+        # initialize the graphic objects based on window size
+        controls.sceneObjects = controls.init(windowWidth, windowHeight, controlScheme)
+        sceneObjects = controls.sceneObjects
 
     elif currentScene == "newScore":
         import newScore
@@ -174,12 +194,15 @@ def gameLoop(currentScene, optional):
                                     event.pos[1] < sceneObjects[currentObject].y + sceneObjects[
                                 currentObject].height + 1:
                                 # Say so (will be used later)
+                                print(sceneObjects[currentObject].name)
                                 if sceneObjects[currentObject].name == "quitGame":
                                     pygame.quit()
                                     return "quitGame"
                                 if currentScene == "newScore":
                                     if len(sceneObjects[0].text) > 0:
                                         return sceneObjects[0].text
+                                if currentScene == "controls":
+                                    print()
                                 else:
                                     return sceneObjects[currentObject].name
 
@@ -214,14 +237,14 @@ def gameLoop(currentScene, optional):
             disabled = playerObject.state in ["jump", "drop", "knockback", "pant","block"] or playerObject.state in playerEntity.attackNames or playerEntity.stamina <= 0
 
             # default all recognised keys to not pressed
-            found32 = found97 = found100 = found257 = found258 = found259 = found261 = False
+            controlScheme[cL][2] = controlScheme[cR][2] = controlScheme[cJ][2] = controlScheme[c1][2] = controlScheme[c2][2] = controlScheme[c3][2] = controlScheme[cB][2] = False
 
             # check through all keys currently down
             for key in heldKeys:
                 # if it's a
-                if key == 97:
+                if key == controlScheme[cL][1]:
                     # note that the key was found
-                    found97 = True
+                    controlScheme[cL][2] = True
                     # if the player isnt walking already
                     if not disabled:
                         if playerObject.state != "walk":
@@ -230,27 +253,27 @@ def gameLoop(currentScene, optional):
                         # left
                         playerObject.face = "l"
                 # if it's d
-                if key == 100:
-                    found100 = True
+                if key == controlScheme[cR][1]:
+                    controlScheme[cR][2] = True
                     # walk right
                     if not disabled:
                         if playerObject.state != "walk":
                             playerObject.changeState("walk")
                         playerObject.face = "r"
                 # if both a and d are down
-                if found97 and found100:
+                if controlScheme[cL][2] and controlScheme[cR][2]:
                     # stand
                     if playerObject.state != "stand" and not disabled:
                         playerObject.changeState("stand")
                 # if it's space
-                if key == 32:
-                    found32 = True
+                if key == controlScheme[cJ][1]:
                     # jump
                     if playerObject.state != "jump" and not disabled:
                         playerObject.changeState("jump")
+                        controlScheme[cL][2] = True
                 # if it's KP1
-                if key == 257:
-                    found257 = True
+                if key == controlScheme[c1][1]:
+                    controlScheme[c1][2] = True
                     # execute attack 1
                     if not disabled:
                         if playerEntity.stamina >= playerEntity.attacks[0][1]:
@@ -258,9 +281,10 @@ def gameLoop(currentScene, optional):
                         else:
                             noStamina = 7
                     attackID = 0
+                    controlScheme[c1][2] = True
                 # if it's KP2
-                if key == 258:
-                    found258 = True
+                if key == controlScheme[c2][1]:
+                    controlScheme[c2][2] = True
                     # execute attack 2
                     if not disabled:
                         if playerEntity.stamina >= playerEntity.attacks[1][1]:
@@ -269,8 +293,8 @@ def gameLoop(currentScene, optional):
                             noStamina = 7
                     attackID = 1
                 # if it's KP3
-                if key == 259:
-                    found259 = True
+                if key == controlScheme[c3][1]:
+                    controlScheme[c3][2] = True
                     # execute attack 3
                     if not disabled:
                         if playerEntity.stamina >= playerEntity.attacks[2][1]:
@@ -278,8 +302,8 @@ def gameLoop(currentScene, optional):
                         else:
                             noStamina = 7
                     attackID = 2
-                if key == 261:
-                    found261 = True
+                if key == controlScheme[cB][1]:
+                    controlScheme[cB][2] = True
                     #block
                     if playerObject.state != "block" and not disabled:
                         if playerEntity.stamina >= round(currentEntity.maxStamina / (FPS * 5)):
@@ -287,7 +311,7 @@ def gameLoop(currentScene, optional):
                         else:
                             noStamina = 7
             # if no keys were found
-            if True not in [found32, found97, found100, found257, found258, found259, found261] and not disabled:
+            if True not in [controlScheme[cL][2], controlScheme[cR][2], controlScheme[cJ][2], controlScheme[c1][2], controlScheme[c2][2], controlScheme[c3][2], controlScheme[cB][2]] and not disabled:
                 # stand
                 if playerObject.state != "stand":
                     playerObject.changeState("stand")
@@ -393,7 +417,7 @@ def gameLoop(currentScene, optional):
 
                         # blocking
                         if currentObject.state == "block":
-                            if currentObject.name == "player" and (not found261 or playerEntity.stamina < round(currentEntity.maxStamina / (FPS * 5))):
+                            if currentObject.name == "player" and (not controlScheme[cB][2] or playerEntity.stamina < round(currentEntity.maxStamina / (FPS * 5))):
                                 playerObject.changeState("stand")
 ##                                playerEntity.armour = playerEntity.maxArmour
                                 if playerEntity.stamina < round(currentEntity.maxStamina / (FPS * 5)):
