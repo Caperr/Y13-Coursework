@@ -13,10 +13,15 @@ def gameLoop(currentScene, optional):
             [pygame.K_o, "o"],[pygame.K_p,"p"],[pygame.K_q,"q"],[pygame.K_r,"r"],[pygame.K_s,"s"],[pygame.K_t,"t"],[pygame.K_u,"u"],
             [pygame.K_v, "v"],[pygame.K_w,"w"],[pygame.K_x,"x"],[pygame.K_y,"y"],[pygame.K_z,"z"]]
 
+    f = open("controls.txt","r")
+
     #The current control scheme. Name is the name of the control, key is the key assigned, found is whether the key was
     #found when iterating through heldKeys
     #[[name,key,found]]
-    controlScheme = [["l",pygame.K_a,False],["r",pygame.K_d,False],["j",pygame.K_SPACE,False],["1",pygame.K_SEMICOLON,False],["2",39,False],["3",pygame.K_BACKSLASH,False],["b",pygame.K_LEFTBRACKET,False]]
+    # controlScheme = [["right",pygame.K_a,False],["right",pygame.K_d,False],["jump",pygame.K_SPACE,False],["attack 1",pygame.K_SEMICOLON,False],["attack 2",39,False],["attack 3",pygame.K_BACKSLASH,False],["block",pygame.K_LEFTBRACKET,False]]
+    controlScheme = [["left",int(f.readline()),False],["right",int(f.readline()),False],["jump",int(f.readline()),False],["attack 1",int(f.readline()),False],["attack 2",int(f.readline()),False],["attack 3",int(f.readline()),False],["block",int(f.readline()),False]]
+    f.close()
+
     cL = 0
     cR = 1
     cJ = 2
@@ -111,6 +116,8 @@ def gameLoop(currentScene, optional):
         # initialize the graphic objects based on window size
         controls.sceneObjects = controls.init(windowWidth, windowHeight, controlScheme)
         sceneObjects = controls.sceneObjects
+        # Used to store which key is currently being remapped.
+        currentKey = -1
 
     elif currentScene == "newScore":
         import newScore
@@ -202,7 +209,18 @@ def gameLoop(currentScene, optional):
                                     if len(sceneObjects[0].text) > 0:
                                         return sceneObjects[0].text
                                 if currentScene == "controls":
-                                    print()
+                                    if sceneObjects[currentObject].name == "menu":
+                                        f = open("controls.txt","w")
+                                        for control in controlScheme:
+                                            f.write(str(control[1]) + "\n")
+                                        return "menu"
+                                    else:
+                                        if currentKey != -1:
+                                            sceneObjects[currentKey].colour = objects.white
+                                            for control in range(len(controlScheme)):
+                                                if controlScheme[control][0] == sceneObjects[currentObject + 1].text:
+                                                    sceneObjects[currentKey + 2].text = "=  " + pygame.key.name(controlScheme[control][1])
+                                        currentKey = currentObject
                                 else:
                                     return sceneObjects[currentObject].name
 
@@ -228,6 +246,24 @@ def gameLoop(currentScene, optional):
                     for letter in keys:
                         if letter[0] == key:
                             sceneObjects[0].text = sceneObjects[0].text + letter[1]
+
+        elif currentScene == "controls":
+            if currentKey != -1:
+                sceneObjects[currentKey].colour = objects.green
+                sceneObjects[currentKey + 2].text = "Press a key..."
+                if len(heldKeys) > 0:
+                    for control in range(len(controlScheme)):
+                        if controlScheme[control][0] == sceneObjects[currentKey + 1].text:
+                            controlScheme[control][1] = heldKeys[0]
+                            print(controlScheme[control][1])
+                            sceneObjects[currentKey].colour = objects.white
+                            key = pygame.key.name(heldKeys[0])
+                            if len(key) > 2 and key[0] == "[" and key[-1] == "]":
+                                key = "Keypad " + key[1:-1]
+                            sceneObjects[currentKey + 2].text = "=  " + key
+                            currentKey = -1
+                            break
+
 
         # default to disabled
         disabled = True
