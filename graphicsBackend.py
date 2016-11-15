@@ -58,6 +58,8 @@ def gameLoop(currentScene, optional):
     # Enemies
     import troll
 
+    numEnemies = 3
+
     # if the scene is forest
     if currentScene == "forest":
         # import the scene module
@@ -77,9 +79,9 @@ def gameLoop(currentScene, optional):
 
         game.enemyEntities = []
         # initialize enemy1
-        enemy1 = game.troll("enemy1")
-        enemy1.__init__("enemy1")
-        game.enemyEntities.append(enemy1)
+        for i in range(numEnemies):
+            game.enemyEntities.append(game.troll("enemy" + str(i + 1)))
+            game.enemyEntities[-1].__init__("enemy" + str(i + 1))
 
 ##        enemy2 = game.troll("enemy2")
 ##        game.enemyEntities.append(enemy2)
@@ -98,7 +100,7 @@ def gameLoop(currentScene, optional):
                 playerEntity = currentEntity
 
         # initialize graphic objects based on window size
-        forest.sceneObjects = forest.init(entities, windowWidth, windowHeight)
+        forest.sceneObjects = forest.init(entities, windowWidth, windowHeight,numEnemies)
         # get list of objects
         sceneObjects = forest.sceneObjects
 
