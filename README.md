@@ -1,8 +1,6 @@
 # Y13-Coursework
 
 TODO:
-- add pause
-- make game pause on tab out
 - make it possible to go to leaderboard and back from mainMenu
 - add enemy jumps after random number of frames
 - finish mainMenu

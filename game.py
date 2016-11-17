@@ -2,6 +2,7 @@
 import random
 import pygame
 import temp
+import troll as trollAI
 
 windowWidth = temp.width
 windowHeight = temp.height
@@ -67,6 +68,10 @@ class classes:
             self.attacks[move][0](True, playerObject, windowWidth)
             # store the attack being run for later
             self.currentAttack = self.attacks[move]
+            # record in the enemy's AI file
+            trollAI.playerAttacks.append(self.currentAttack)
+            if len(trollAI.playerAttacks) > 5:
+                trollAI.playerAttacks = trollAI.playerAttacks[1:-1]
         # if it's not the first frame
         else:
             # run the move as normal without initialization

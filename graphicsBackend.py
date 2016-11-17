@@ -58,7 +58,7 @@ def gameLoop(currentScene, optional):
     # Enemies
     import troll
 
-    numEnemies = 3
+    numEnemies = 1
 
     # if the scene is forest
     if currentScene == "forest":

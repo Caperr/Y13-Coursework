@@ -5,6 +5,23 @@
 # the troll's "AI" file - its reactions and behaviour
 import random
 
+playerAttacks = []
+
+# This code taken from Max Shawabkeh on stackoverflow.com
+# source: http://stackoverflow.com/questions/2130016/splitting-a-list-of-arbitrary-size-into-only-roughly-n-equal-parts
+def chunkIt(seq, num):
+  avg = len(seq) / float(num)
+  out = []
+  last = 0.0
+
+  while last < len(seq):
+    out.append(seq[int(last):int(last + avg)])
+    last += avg
+
+  return out
+# end code by Max Shawabkeh
+
+
 def react(enemyObject, enemyEntity, playerObject, playerEntity, windowWidth):
     # if the troll is not disabled
     if not (enemyObject.state in ["jump", "drop","knockback"] or enemyObject.state in enemyEntity.attackNames):
@@ -22,6 +39,13 @@ def react(enemyObject, enemyEntity, playerObject, playerEntity, windowWidth):
             # face left
             enemyObject.face = "l"
             # if the attack delay isnt 0
+
+        if len(playerAttacks) > 2:
+            for attackNum in range(len(playerAttacks[0:-3])):
+                if playerEntity.attackNames[attackNum] == playerEntity.attackNames[attackNum + 1] == playerEntity.attackNames[attackNum + 2]:
+                    splitAttacks = chunkIt(playerEntity.attackNames,3)
+                    
+                        
 
         if enemyEntity.currentAttackID is None:
             enemyEntity.currentAttackID = random.randint(0, len(enemyEntity.attackNames) - 1)
