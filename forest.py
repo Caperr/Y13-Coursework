@@ -33,6 +33,8 @@ def init(entities,windowWidth,windowHeight,numEnemies):
     killCount = killCounter("killCount",playerEntity)
     # animation to display if the player attempts an action without the appropriate stamina
     noStamina = animation("noStamina",round(windowWidth / 2),playerStamina.y,False,True,"noStamina",0,4)
+    # Text to display when the game is paused
+    pauseText = text("pauseText",round(windowWidth * 2/5),round(windowHeight/2),False,False,"Game paused",red,True,50)
 
     other = [player, playerHealth, playerStamina, killCount, noStamina]
 

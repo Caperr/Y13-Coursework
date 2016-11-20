@@ -70,7 +70,7 @@ class classes:
             self.currentAttack = self.attacks[move]
             # record in the enemy's AI file
             trollAI.playerAttacks.append(self.currentAttack)
-            if len(trollAI.playerAttacks) > 5:
+            if len(trollAI.playerAttacks) > 3:
                 trollAI.playerAttacks = trollAI.playerAttacks[1:-1]
         # if it's not the first frame
         else:
@@ -315,8 +315,7 @@ class knight(classes):
     #     pass
 
     def setAttacks(self):
-        return [[self.swing, round(self.maxStamina * 0.3)], [self.shieldBash, round(self.maxStamina * 0.25)],
-         [self.swordDash, round(self.maxStamina * 0.6)]]
+        return [[self.shieldBash, round(self.maxStamina * 0.25)], [self.swing, round(self.maxStamina * 0.3)], [self.swordDash, round(self.maxStamina * 0.6)]]
 
     # list of all of the attacks. used multi-dimensional array because I might need to pass more data in the future
     attacks = []

@@ -19,7 +19,7 @@ def gameLoop(currentScene, optional):
     #found when iterating through heldKeys
     #[[name,key,found]]
     # controlScheme = [["right",pygame.K_a,False],["right",pygame.K_d,False],["jump",pygame.K_SPACE,False],["attack 1",pygame.K_SEMICOLON,False],["attack 2",39,False],["attack 3",pygame.K_BACKSLASH,False],["block",pygame.K_LEFTBRACKET,False]]
-    controlScheme = [["left",int(f.readline()),False],["right",int(f.readline()),False],["jump",int(f.readline()),False],["attack 1",int(f.readline()),False],["attack 2",int(f.readline()),False],["attack 3",int(f.readline()),False],["block",int(f.readline()),False]]
+    controlScheme = [["left",int(f.readline()),False],["right",int(f.readline()),False],["jump",int(f.readline()),False],["attack 1",int(f.readline()),False],["attack 2",int(f.readline()),False],["attack 3",int(f.readline()),False],["block",int(f.readline()),False],["pause",int(f.readline()),False]]
     f.close()
 
     cL = 0
@@ -29,6 +29,7 @@ def gameLoop(currentScene, optional):
     c2 = 4
     c3 = 5
     cB = 6
+    cP = 7
 
 
     # the backdrop of the scene
@@ -161,6 +162,8 @@ def gameLoop(currentScene, optional):
     # track how many more times to show the noStamina animation
     noStamina = 0
 
+    paused = False
+
     # keys currently down
     heldKeys = []
 
@@ -279,6 +282,41 @@ def gameLoop(currentScene, optional):
 
             # check through all keys currently down
             for key in heldKeys:
+                # if it's pause
+                if key == controlScheme[cP][1]:
+                #     pause
+                    paused = True
+                    for currentObject in sceneObjects:
+                        if currentObject.name == "pauseText":
+                            currentObject.toRender = True
+                    while paused:
+                        for event in pygame.event.get():  # If the quit button (X) has been pressed
+                            if event.type == pygame.QUIT:
+                                # Quit the game
+                                pygame.quit()
+                                return "quitGame"
+
+                            # If pause was pressed
+                            elif event.type == pygame.KEYDOWN:
+                                if event.key == controlScheme[cP][1]:
+                                    # unpause
+                                    paused = False
+                                for currentObject in sceneObjects:
+                                    if currentObject.name == "pauseText":
+                                        currentObject.toRender = False
+                                # add it to an array of held keys
+                                heldKeys.append(event.key)  # if a key was lifted
+
+                            elif event.type == pygame.KEYUP:
+                                # see if it was held before
+                                for current in heldKeys:
+                                    # if it was
+                                    if current == event.key:
+                                        # remove it from the array of held keys
+                                        heldKeys.remove(current)
+
+                        gameClock.tick(FPS)
+
                 # if it's a
                 if key == controlScheme[cL][1]:
                     # note that the key was found

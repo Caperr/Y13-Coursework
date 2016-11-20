@@ -21,6 +21,31 @@ def chunkIt(seq, num):
   return out
 # end code by Max Shawabkeh
 
+def getAttack(playerAttacks,enemyEntity,playerEntity):
+    # for attackNum in range(len(playerAttacks[0:-3])):
+    # print("player attacks to check:", playerAttacks[0:-3])
+    # for attackNum in range(len(playerAttacks[0:-3])):
+    attackNum = 0
+    if playerAttacks[attackNum] == playerAttacks[attackNum + 1] == playerAttacks[attackNum + 2]:
+        # print("attacks", attackNum, "to", str(attackNum + 2), "are the same")
+        splitPlayerAttacks = chunkIt(playerEntity.attacks, 3)
+        # print("player attacks split:", splitPlayerAttacks)
+        splitEnemyAttacks = chunkIt(enemyEntity.attacks, 3)
+        # print("enemy attacks split:", splitEnemyAttacks)
+        for attack in range(len(splitPlayerAttacks)):
+            # print("checking attacks region:", splitPlayerAttacks[attack])
+            if playerAttacks[attackNum] in splitPlayerAttacks[attack]:
+                # print(playerAttacks[attackNum],"is in",splitPlayerAttacks[attack])
+                # print("found the attack in region", attackNum)
+                enemyEntity.currentAttackID = random.randint(0, len(splitEnemyAttacks[abs(attack - 2)]) - 1)
+                # print("set attack id to", enemyEntity.currentAttackID)
+                for enemyAttack in range(len(enemyEntity.attacks)):
+                    if enemyEntity.attacks[enemyAttack] == splitEnemyAttacks[abs(attack - 2)][
+                        enemyEntity.currentAttackID]:
+                        # print("found the attack at", enemyAttack, "in the enemy's attack list")
+                        enemyEntity.currentAttackID = enemyAttack
+                        return True
+    return False
 
 def react(enemyObject, enemyEntity, playerObject, playerEntity, windowWidth):
     # if the troll is not disabled
@@ -40,14 +65,12 @@ def react(enemyObject, enemyEntity, playerObject, playerEntity, windowWidth):
             enemyObject.face = "l"
             # if the attack delay isnt 0
 
-        if len(playerAttacks) > 2:
-            for attackNum in range(len(playerAttacks[0:-3])):
-                if playerEntity.attackNames[attackNum] == playerEntity.attackNames[attackNum + 1] == playerEntity.attackNames[attackNum + 2]:
-                    splitAttacks = chunkIt(playerEntity.attackNames,3)
-                    
-                        
+        generated = False
 
-        if enemyEntity.currentAttackID is None:
+        if enemyEntity.currentAttackID is None and len(playerAttacks) > 2:
+            generated = getAttack(playerAttacks,enemyEntity,playerEntity)
+
+        if not generated and enemyEntity.currentAttackID is None:
             enemyEntity.currentAttackID = random.randint(0, len(enemyEntity.attackNames) - 1)
             originalAttack = enemyEntity.currentAttackID
             while enemyEntity.distance < enemyEntity.attacks[enemyEntity.currentAttackID][1]:
