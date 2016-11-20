@@ -34,9 +34,9 @@ def init(entities,windowWidth,windowHeight,numEnemies):
     # animation to display if the player attempts an action without the appropriate stamina
     noStamina = animation("noStamina",round(windowWidth / 2),playerStamina.y,False,True,"noStamina",0,4)
     # Text to display when the game is paused
-    pauseText = text("pauseText",round(windowWidth * 2/5),round(windowHeight/2),False,False,"Game paused",red,True,50)
+    pauseText = text("pauseText",round(windowWidth * 2/5),round(windowHeight/2),False,False,"Game paused",blue,True,50)
 
-    other = [player, playerHealth, playerStamina, killCount, noStamina]
+    other = [player, playerHealth, playerStamina, killCount, noStamina, pauseText]
 
     for i in other:
         sceneObjects.append(i)

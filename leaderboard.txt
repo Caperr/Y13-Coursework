@@ -4,6 +4,6 @@ testin 8
 jasper 7
 jasper 7
 no 6
-nahnah 5
 ok 5
+nahnah 5
 quitGame 5

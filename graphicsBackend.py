@@ -4,7 +4,6 @@ import random
 def gameLoop(currentScene, optional):
     # Support libraries
     import pygame
-    import sys
     # temp is used to transfer data
     import temp
 
@@ -243,6 +242,10 @@ def gameLoop(currentScene, optional):
                         # remove it from the array of held keys
                         heldKeys.remove(current)
 
+            elif event.type == pygame.ACTIVEEVENT:
+                if event.state in [1,2]:
+                    paused = True
+
         if currentScene == "newScore":
             for key in heldKeys:
                 if key == pygame.K_BACKSPACE and len(sceneObjects[0].text) > 0:
@@ -283,12 +286,13 @@ def gameLoop(currentScene, optional):
             # check through all keys currently down
             for key in heldKeys:
                 # if it's pause
-                if key == controlScheme[cP][1]:
+                if key == controlScheme[cP][1] or paused == True:
                 #     pause
                     paused = True
                     for currentObject in sceneObjects:
                         if currentObject.name == "pauseText":
                             currentObject.toRender = True
+                            break
                     while paused:
                         for event in pygame.event.get():  # If the quit button (X) has been pressed
                             if event.type == pygame.QUIT:
@@ -301,9 +305,7 @@ def gameLoop(currentScene, optional):
                                 if event.key == controlScheme[cP][1]:
                                     # unpause
                                     paused = False
-                                for currentObject in sceneObjects:
-                                    if currentObject.name == "pauseText":
-                                        currentObject.toRender = False
+                                    currentObject.toRender = False
                                 # add it to an array of held keys
                                 heldKeys.append(event.key)  # if a key was lifted
 
@@ -314,6 +316,13 @@ def gameLoop(currentScene, optional):
                                     if current == event.key:
                                         # remove it from the array of held keys
                                         heldKeys.remove(current)
+
+                        font = pygame.font.SysFont(None, currentObject.size)
+                        # Render the text
+                        shownText = font.render(currentObject.text, currentObject.antialiasing, currentObject.colour)
+                        # blit it onto the screen
+                        window.blit(shownText, [currentObject.x, currentObject.y])
+                        pygame.display.flip()
 
                         gameClock.tick(FPS)
 
