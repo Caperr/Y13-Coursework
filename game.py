@@ -78,18 +78,18 @@ class classes:
             self.currentAttack[0](False, playerObject, windowWidth)
 
     # initialize player
-    def init(self, name):
+    def __init__(self, name):
         # Set the player's name
         self.name = name
 
-    # Dodge an incoming attack. Since attack hit is based solely on proximity, all it needs to do is move the player.
-    def dodge(self):
-        pass
-
-    # update player stats when they pass a boundary in experience
-    def levelUp(self):
-        pass
-        # update BY ADDING (NOT BY SETTING (MAYBE??????)) armour(?), maxArmour, health, maxHealth, etc based on level
+    # # Dodge an incoming attack. Since attack hit is based solely on proximity, all it needs to do is move the player.
+    # def dodge(self):
+    #     pass
+    #
+    # # update player stats when they pass a boundary in experience
+    # def levelUp(self):
+    #     pass
+    #     # update BY ADDING (NOT BY SETTING (MAYBE??????)) armour(?), maxArmour, health, maxHealth, etc based on level
 
 
 # Class template for a knight
@@ -100,10 +100,6 @@ class knight(classes):
     maxArmour = armour
     startX = 0
     startWidth = 0
-
-    # set the instance's name
-    def __init__(self, name):
-        self.init(name)
 
     # hit all frontal entities with your sword
     # medium physical damage, small knockback
@@ -323,27 +319,27 @@ class knight(classes):
     attackNames = ["swing", "shieldBash", "swordDash"]
 
 
-# Mage template
-class mage(classes):
-    armour = 5
-    maxArmour = armour
-    # similar concept to stamina, but for casting spells.
-    mana = 100
-    classType = "Mage"
-
-
-# archer template
-class archer(classes):
-    armour = 3
-    maxArmour = armour
-    classType = "Archer"
-
-
-# rogue template
-class rogue(classes):
-    armour = 3
-    maxArmour = armour
-    classType = "Rogue"
+# # Mage template
+# class mage(classes):
+#     armour = 5
+#     maxArmour = armour
+#     # similar concept to stamina, but for casting spells.
+#     mana = 100
+#     classType = "Mage"
+#
+#
+# # archer template
+# class archer(classes):
+#     armour = 3
+#     maxArmour = armour
+#     classType = "Archer"
+#
+#
+# # rogue template
+# class rogue(classes):
+#     armour = 3
+#     maxArmour = armour
+#     classType = "Rogue"
 
 
 ###############################
@@ -382,9 +378,9 @@ class enemy:
     stamina = 1
     maxStamina = 1
 
-    # same as player dodge
-    def dodge(self):
-        pass
+    # # same as player dodge
+    # def dodge(self):
+    #     pass
 
     # set entity health and maxhealth
     def setHealth(self):
@@ -605,109 +601,109 @@ class troll(enemy):
     attackNames = ["shieldBash","swing","swordDash"]
 
 
-# giant spider template
-class spider(enemy):
-    armour = 2
-    maxArmour = armour
-
-    # initial maxHealth calculation
-    def getHealth(self):
-        # base is 4 * the spider's level.
-        self.health = 4 * self.level
+# # giant spider template
+# class spider(enemy):
+#     armour = 2
+#     maxArmour = armour
+#
+#     # initial maxHealth calculation
+#     def getHealth(self):
+#         # base is 4 * the spider's level.
+#         self.health = 4 * self.level
 
 
 ######################################
-
-# Save management
-
-# Check a requested name is valid
-def checkName(name):
-    # valid characters
-    alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
-    # maximum name length
-    maxLen = 16
-    # minimum name length
-    minLen = 1
-    # check name length
-    if not minLen <= len(name) <= maxLen:
-        return False, 0
-
-    # check all characters are in the alphabet
-    for i in range(len(name)):
-        if not name[i] in alphabet:
-            return False, 1
-
-    # no errors
-    return True, 0
-
-
-# Get the desired new save name
-def getNewGame():
-    # TODO: GIVE USER A LIST OF EXISTING SAVES - MAKE A DATABASE?
-    newName = input()  # TODO: GET NEW NAME FROM TEXT INPUT
-    # Check the name is valid
-    valid, error = checkName(newName)
-    # give error feedback based on checkName() results
-    while not valid:
-        if error == 0:
-            msg = "Please use between 1 and 15 characters"
-        else:
-            msg = "Please use only letters, numbers and underscores"
-        print(msg)  ########################################################################SHOW ERROR ON SCREEN
-
-    # see if the same already exists
-    try:
-        open("saves/" + newName, 'r')
-    # file not found
-    except IOError:
-        # name must be valid
-        return newName
-    # ask for new name if save is found
-    print("That save already exists, please try again")  ##########################################SHOW ERROR ON SCREEN
-    return ""
-
-
-# Initialize a new game
-# not sure if I'll need to use this one.
-def newGame(name):
-    pass
-
-
-# Get the desired save name to load
-# TODO: CHANGE! GIVE USER A LIST OF EXISTING SAVES - MAKE A DATABASE?
-# def getLoadGame():
-#  name = input() #####################################################GET NEW NAME FROM TEXT INPUT
-#    valid, error = checkName(newName)
-#   while valid == False:
-#     if error == 0:
-#       msg = "Please use between 1 and 15 characters"
-#     else:
-#       msg = "Please use only letters, numbers and underscores"
-#     print(msg) ########################################################################SHOW ERROR ON SCREEN
 #
-#   try:
-#     open("saves/" + name, 'r')
-#   except IOError:
-#     print("That save does not exist, please try again") ##########################################SHOW ERROR ON SCREEN
-#     return
-#   return name
-
-# Load a save file into the game by reading
-def loadGame():
-    pass
-
-
-# Save game data to a file. Inefficient.
-def saveGame():
-    # open the file
-    f = open("saves/" + player.name, "w")
-    # get all data to be saved
-    data = [player.health, player.maxHealth, player.name, player.healthPot, player.classType]
-    # If the player is a mage, add mana to the save.
-    if player.classType == "Mage":
-        data.append(player.mana)
-    # run through data to be saved, writing to the file
-    for i in range(len(data)):
-        f.write(str(data[i]) + "\n")
-    # save and close the file
-    f.close()
+# # Save management
+#
+# # Check a requested name is valid
+# def checkName(name):
+#     # valid characters
+#     alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
+#     # maximum name length
+#     maxLen = 16
+#     # minimum name length
+#     minLen = 1
+#     # check name length
+#     if not minLen <= len(name) <= maxLen:
+#         return False, 0
+#
+#     # check all characters are in the alphabet
+#     for i in range(len(name)):
+#         if not name[i] in alphabet:
+#             return False, 1
+#
+#     # no errors
+#     return True, 0
+#
+#
+# # Get the desired new save name
+# def getNewGame():
+#     # TODO: GIVE USER A LIST OF EXISTING SAVES - MAKE A DATABASE?
+#     newName = input()  # TODO: GET NEW NAME FROM TEXT INPUT
+#     # Check the name is valid
+#     valid, error = checkName(newName)
+#     # give error feedback based on checkName() results
+#     while not valid:
+#         if error == 0:
+#             msg = "Please use between 1 and 15 characters"
+#         else:
+#             msg = "Please use only letters, numbers and underscores"
+#         print(msg)  ########################################################################SHOW ERROR ON SCREEN
+#
+#     # see if the same already exists
+#     try:
+#         open("saves/" + newName, 'r')
+#     # file not found
+#     except IOError:
+#         # name must be valid
+#         return newName
+#     # ask for new name if save is found
+#     print("That save already exists, please try again")  ##########################################SHOW ERROR ON SCREEN
+#     return ""
+#
+#
+# # Initialize a new game
+# # not sure if I'll need to use this one.
+# def newGame(name):
+#     pass
+#
+#
+# # Get the desired save name to load
+# # TODO: CHANGE! GIVE USER A LIST OF EXISTING SAVES - MAKE A DATABASE?
+# # def getLoadGame():
+# #  name = input() #####################################################GET NEW NAME FROM TEXT INPUT
+# #    valid, error = checkName(newName)
+# #   while valid == False:
+# #     if error == 0:
+# #       msg = "Please use between 1 and 15 characters"
+# #     else:
+# #       msg = "Please use only letters, numbers and underscores"
+# #     print(msg) ########################################################################SHOW ERROR ON SCREEN
+# #
+# #   try:
+# #     open("saves/" + name, 'r')
+# #   except IOError:
+# #     print("That save does not exist, please try again") ##########################################SHOW ERROR ON SCREEN
+# #     return
+# #   return name
+#
+# # Load a save file into the game by reading
+# def loadGame():
+#     pass
+#
+#
+# # Save game data to a file. Inefficient.
+# def saveGame():
+#     # open the file
+#     f = open("saves/" + player.name, "w")
+#     # get all data to be saved
+#     data = [player.health, player.maxHealth, player.name, player.healthPot, player.classType]
+#     # If the player is a mage, add mana to the save.
+#     if player.classType == "Mage":
+#         data.append(player.mana)
+#     # run through data to be saved, writing to the file
+#     for i in range(len(data)):
+#         f.write(str(data[i]) + "\n")
+#     # save and close the file
+#     f.close()
