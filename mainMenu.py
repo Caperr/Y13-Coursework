@@ -26,7 +26,10 @@ def init(windowWidth,windowHeight):
     # return all of the objects
     controls = rectangle("controls", round(windowWidth / 2), round(windowHeight * 11/15), True, True, round(windowWidth / 4), round(windowHeight / 8), green)
     controlsText = text("controlsText", 0, 0, False, True, "Controls", white, True, 25)
+    leaderboard = rectangle("leaderboard", round(windowWidth / 2), round(windowHeight / 10), True, True, round(windowWidth / 4), round(windowHeight / 8), green)
+    leaderboardText = text("leaderboardText", 0, 0, False, True, "Leaderboard", white, True, 25)
+    leaderboardText.centreText((leaderboard.x + round(leaderboard.width / 2), leaderboard.y + round(leaderboard.height / 2)))
     # centre it in the quit game button
     controlsText.centreText((controls.x + round(controls.width / 2), controls.y + round(controls.height / 2)))
     playerAnimation = animation("playerAnimation",round(windowWidth / 8),round(windowWidth * 2/5),False,True,"player/stand",1,4)
-    return [newGame, quitGame,newGameText,quitGameText,playerAnimation,controls,controlsText]
+    return [newGame, quitGame,newGameText,quitGameText,playerAnimation,controls,controlsText,leaderboard,leaderboardText]

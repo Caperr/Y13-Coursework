@@ -4,6 +4,6 @@ jasper 10
 testin 8
 jasper 7
 jasper 7
+biggie 7
 no 6
-quitGame 5
 nahnah 5

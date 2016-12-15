@@ -25,16 +25,35 @@ def swap(A, x, y):
     A[y] = tmp
 # end adapted code by Isai Damier
 
+def getScores():
+    scores = []
+    f = open("leaderboard.txt","r")
+    for line in range(file_len("leaderboard.txt")):
+        read = f.readline()
+        scores.append(read[0:len(read) - 1].split(" "))
+    f.close()
+    scores = bubblesort(scores)[::-1]
+    if len(scores) > 9:
+        scores = scores[0:9]
+    f = open("leaderboard.txt","w")
+    for score in scores:
+        f.write(score[0] + " " + score[1] + "\n")
+    f.close()
+    return scores
+
 go = "playGame"
 
 while go == "playGame":
     result = "menu"
-    while result in ["menu","controls"]:
+    while result in ["menu","controls","leaderboard"]:
         result = graphicsBackend.gameLoop("mainMenu",None)
         if result == "controls":
             result = graphicsBackend.gameLoop("controls",None)
+        elif result == "leaderboard":
+            result = graphicsBackend.gameLoop("leaderboard",getScores())
+            if result == "playGame":
+                result = "menu"
     if result == "newGame":
-        scores = []
         # graphicsBackend.gameLoop("forest", None)
         score = graphicsBackend.gameLoop("forest", None)
         if score == "quitGame":
@@ -45,18 +64,6 @@ while go == "playGame":
         f = open("leaderboard.txt","a")
         f.write(name + " " + str(score) + "\n")
         f.close()
-        f = open("leaderboard.txt","r")
-        for line in range(file_len("leaderboard.txt")):
-            read = f.readline()
-            scores.append(read[0:len(read) - 1].split(" "))
-        f.close()
-        scores = bubblesort(scores)[::-1]
-        if len(scores) > 9:
-            scores = scores[0:9]
-        f = open("leaderboard.txt","w")
-        for score in scores:
-            f.write(score[0] + " " + score[1] + "\n")
-        f.close()
-        go = graphicsBackend.gameLoop("leaderboard",scores)
+        go = graphicsBackend.gameLoop("leaderboard",getScores())
     else:
         go = ""
