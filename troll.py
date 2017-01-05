@@ -1,4 +1,3 @@
-# TODO: Keep a record of the player's attacks and react. e.g swordDash if player is constantly shieldBashing
 # TODO: Randomly choose whether to block a player attack or not
 # TODO: Add difficulty setting -> e.g increase base troll difficulty, FPS, number of trolls
 
@@ -22,9 +21,6 @@ def chunkIt(seq, num):
 # end code by Max Shawabkeh
 
 def getAttack(playerAttacks,enemyEntity,playerEntity):
-    # for attackNum in range(len(playerAttacks[0:-3])):
-    # print("player attacks to check:", playerAttacks[0:-3])
-    # for attackNum in range(len(playerAttacks[0:-3])):
     attackNum = 0
     if playerAttacks[attackNum] == playerAttacks[attackNum + 1] == playerAttacks[attackNum + 2]:
         # print("attacks", attackNum, "to", str(attackNum + 2), "are the same")

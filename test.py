@@ -3,7 +3,7 @@
 import pygame
 
 pygame.init()
-# The dimentions of the game window
+# The dimensions of the game window
 windowWidth = 800
 windowHeight = 600
 # Initialize the game window

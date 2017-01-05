@@ -17,7 +17,6 @@ def gameLoop(currentScene, optional):
     #The current control scheme. Name is the name of the control, key is the key assigned, found is whether the key was
     #found when iterating through heldKeys
     #[[name,key,found]]
-    # controlScheme = [["right",pygame.K_a,False],["right",pygame.K_d,False],["jump",pygame.K_SPACE,False],["attack 1",pygame.K_SEMICOLON,False],["attack 2",39,False],["attack 3",pygame.K_BACKSLASH,False],["block",pygame.K_LEFTBRACKET,False]]
     controlScheme = [["left",int(f.readline()),False],["right",int(f.readline()),False],["jump",int(f.readline()),False],["attack 1",int(f.readline()),False],["attack 2",int(f.readline()),False],["attack 3",int(f.readline()),False],["block",int(f.readline()),False],["pause",int(f.readline()),False]]
     f.close()
 
@@ -82,12 +81,6 @@ def gameLoop(currentScene, optional):
         for i in range(numEnemies):
             game.enemyEntities.append(game.troll("enemy" + str(i + 1)))
             game.enemyEntities[-1].__init__("enemy" + str(i + 1))
-
-##        enemy2 = game.troll("enemy2")
-##        game.enemyEntities.append(enemy2)
-
-##        enemy3 = game.troll("enemy3")
-##        game.enemyEntities.append(enemy3)
 
         # add all game objects to entities array
         for enemy in game.enemyEntities:
@@ -203,9 +196,9 @@ def gameLoop(currentScene, optional):
                             if sceneObjects[currentObject].x - 1 < event.pos[0] < sceneObjects[currentObject].x + \
                                     sceneObjects[currentObject].width + 1 and sceneObjects[currentObject].y - 1 < \
                                     event.pos[1] < sceneObjects[currentObject].y + sceneObjects[
-                                currentObject].height + 1:
+                                    currentObject].height + 1:
                                 # Say so (will be used later)
-                                print(sceneObjects[currentObject].name)
+                                # print(sceneObjects[currentObject].name)
                                 if sceneObjects[currentObject].name == "quitGame":
                                     pygame.quit()
                                     return "quitGame"
@@ -241,10 +234,6 @@ def gameLoop(currentScene, optional):
                     if current == event.key:
                         # remove it from the array of held keys
                         heldKeys.remove(current)
-
-            elif event.type == pygame.ACTIVEEVENT:
-                if event.state in [1,2]:
-                    paused = True
 
         if currentScene == "newScore":
             for key in heldKeys:
@@ -450,10 +439,6 @@ def gameLoop(currentScene, optional):
                                 # remove them from the list of objects
                                 sceneObjects.remove(currentObject)
                                 entities.remove(currentEntity)
-                                # remove their health/stamina bars
-                                # for current in sceneObjects:
-                                #     if current.name == currentObject.name + "Health" or current.name == currentObject.name + "Stamina":
-                                #         sceneObjects.remove(current)
                                 # start game quit
                                 gameQuit = True
                             # if an enemy was defeated, add it to the players kill count
@@ -477,7 +462,6 @@ def gameLoop(currentScene, optional):
                                                 currentObject.toRender,currentObject.states, "stand",currentObject.folder, "l")
                                 currentEntity.getHealth()
                                 currentEntity.setHealth()
-                                # FPS += 2
 
                         # if game is quitting, take 1 from the timer
                         if gameQuit:
@@ -504,12 +488,10 @@ def gameLoop(currentScene, optional):
                         if currentObject.state == "block":
                             if currentObject.name == "player" and (not controlScheme[cB][2] or playerEntity.stamina < round(currentEntity.maxStamina / (FPS * 5))):
                                 playerObject.changeState("stand")
-##                                playerEntity.armour = playerEntity.maxArmour
                                 if playerEntity.stamina < round(currentEntity.maxStamina / (FPS * 5)):
                                     noStamina = 7
                             else:
                                 currentEntity.stamina -= round(currentEntity.maxStamina / (FPS * 5))
-##                                currentEntity.armour = 100
 
                         elif currentEntity.armour != currentEntity.maxArmour:
                             currentEntity.armour = currentEntity.maxArmour
@@ -786,7 +768,3 @@ def gameLoop(currentScene, optional):
     pygame.quit()
     if currentScene == "forest":
         return kills
-#
-#
-# # start the game loop
-# gameLoop()

@@ -257,12 +257,6 @@ class entity(objects):
             self.y += oldHeight - newHeight
         elif newHeight > oldHeight:
             self.y -= newHeight - oldHeight
-        # if self.y + oldHeight > self.y + newHeight:
-        #     self.y += (self.y + oldHeight) - (self.y + newHeight)
-        # elif self.y + oldHeight < self.y + newHeight:
-        #     self.y += (self.y + newHeight) - (self.y + oldHeight)
-        # if self.y + oldHeight == floor:
-        #     self.y = floor - newHeight
         # add the old state to the previous states array
         self.previous.append(self.state)
         # if the array holds more than 2 states
