@@ -1,13 +1,12 @@
 # Y13-Coursework
 
 TODO:
-- make it possible to go to leaderboard and back from mainMenu
+- NEW GRAPHICS (!!!)
+
 - add enemy jumps after random number of frames
-- finish mainMenu
 - random item spawns
 -> food, potions, boosters
 - new stand and pant animations (?)
-- try new graphics (?)
 - (?) add more enemies
 - (?) add more enemy types
 - (?) add more player types
