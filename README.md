@@ -22,4 +22,4 @@ TODO:
 - display "troll mutation!" etc
 - display level above troll
 - Randomly choose whether to block a player attack or not
-- Add difficulty setting -> e.g increase base troll difficulty, FPS, number of trolls
+- Add difficulty setting -> e.g increase base troll difficulty, FPS, number of trolls, number of kills per troll kill
