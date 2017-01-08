@@ -8,6 +8,7 @@ TODO:
   - have a file with co-ords for each frame for a box (over the attacker's sword) where a hit is detected
   - have a file with co-ords for each frame for a box (over the receiving entity) where a hit could land
   - EITHER of these would make block management much either, because I could just move/remove the recieving hitbox
+  - If i change the way blocking works like this, i will have to remove the way it's currently handled (with armour boosting)
 - split stamina bar into different colours at the points where the player has enough stamina to execute the different attacks
 - add enemy jumps after random number of frames
 - random item spawns
