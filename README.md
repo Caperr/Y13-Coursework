@@ -4,9 +4,10 @@ TODO:
 - (!) Fix troll animations
 - (!) rename stuff (i.e troll to skeleton, forest to swamp, files etc.)
 
-- new hit detection. either:
-  - have a file with co-ords for each frame for a box (over the sword) where a hit is detected
-  - have a section picture for each frame over the sword, using the same system kind of
+- new hit detection, using two text files per frame:
+  - have a file with co-ords for each frame for a box (over the attacker's sword) where a hit is detected
+  - have a file with co-ords for each frame for a box (over the receiving entity) where a hit could land
+  - EITHER of these would make block management much either, because I could just move/remove the recieving hitbox
 - split stamina bar into different colours at the points where the player has enough stamina to execute the different attacks
 - add enemy jumps after random number of frames
 - random item spawns
