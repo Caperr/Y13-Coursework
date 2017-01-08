@@ -5,6 +5,7 @@ TODO:
 - (!) fix troll swing being above ground
 - (!) rename stuff (i.e troll to skeleton, forest to swamp, files etc.)
 
+- properly animate 1 frame animations e.g drop, jump, knockback..
 - add jump/drop attack
 - new hit detection, using two text files per frame:
   - have a file with co-ords for each frame for a box (over the attacker's sword) where a hit is detected
