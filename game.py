@@ -584,8 +584,8 @@ class troll(enemy):
                 # if progress is done, revert to standing
                 enemyObject.changeState("stand")
 
-    # list of all attacks AND the range in which the enemy will ATTEMPT them
-    attacks = [[shieldBash, 0, round(windowWidth * 5/24)],[swing, round(windowWidth * 5/24), round(windowWidth / 4)],[swordDash, round(windowWidth / 4), round(windowWidth * 3/5)]]
+    # list of all attacks AND the range in which the enemy will ATTEMPT them - not necessarily hit.
+    attacks = [[shieldBash, 0, round(windowWidth * 5/12)],[swing, round(windowWidth * 10/24), round(windowWidth * 13 / 24)],[swordDash, round(windowWidth / 4), round(windowWidth * 3/5)]]
     # list of all of the attack names
     attackNames = ["shieldBash","swing","swordDash"]
 

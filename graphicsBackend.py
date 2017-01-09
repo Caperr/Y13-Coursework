@@ -518,14 +518,14 @@ def gameLoop(currentScene, optional):
                                 currentObject.y += floor - feet
 
                         # if the entity is attacking and the entity's feet are above the ground
-                        if currentObject.state in currentEntity.attackNames and feet < floor:
-                            # move them back onto the ground
-                            currentObject.y = floor - image.get_height()
+                        # if currentObject.state in currentEntity.attackNames and feet < floor:
+                        #     # move them back onto the ground
+                        #     currentObject.y = floor - image.get_height()
 
-                        # if the entity is dropping but they have reached the ground
-                        if currentObject.state == "drop" and currentObject.y + image.get_height() == floor:
-                            # revert to standing
-                            currentObject.changeState("stand")
+                            # if the entity is dropping but they have reached the ground
+                            if currentObject.y + image.get_height() == floor:
+                                # revert to standing
+                                currentObject.changeState("stand")
 
                         # if the entity is being knocked back
                         if currentObject.state == "knockback":
@@ -533,7 +533,7 @@ def gameLoop(currentScene, optional):
                             currentObject.face = currentObject.knockbackFace
                             # if the entity is below half way through the knockback sequence
                             if currentObject.knockbackDistance >= round(currentObject.knockbackDistanceMax / 2):
-                                # make them gain height at jump rate
+                                # make them gain height at half jump rate
                                 currentObject.y -= round(jumpSpeed / 2)
                             # if the entity is above half way through the knockback sequence
                             elif currentObject.knockbackDistance != 0:
@@ -608,25 +608,20 @@ def gameLoop(currentScene, optional):
                                 # switch to dropping
                                 currentObject.changeState("drop")
 
-                # enemy attack continuation and AI call
-                # scan through all objects on the scene
-                for currentObject in sceneObjects:
-                    # associate with game object counterpart
-                    for currentEntity in entities:
-                        if currentObject.name == currentEntity.name:
-                            # if they are not the player and they are not disabled
-                            if currentObject.name != "player" and currentObject.state not in ["jump", "drop", "knockback", "pant"]:
-                                # if they are not attacking
-                                if not currentObject.state in currentEntity.attackNames:
-                                    # call their AI file
-                                    troll.react(currentObject, currentEntity, playerObject, playerEntity, windowWidth)
-                                # if they are attacking
-                                elif currentEntity.currentAttack == "none":
-                                    currentObject.changeState("stand")
-                                else:
-                                    # continue the attack
-                                    currentEntity.attack(playerObject, playerEntity, currentObject, windowWidth,
-                                                         currentEntity.currentAttack)
+                        # enemy attack continuation and AI call
+                        # if they are not the player and they are not disabled
+                        if currentObject.name != "player" and currentObject.state not in ["jump", "drop", "knockback", "pant"]:
+                            # if they are not attacking
+                            if not currentObject.state in currentEntity.attackNames:
+                                # call their AI file
+                                troll.react(currentObject, currentEntity, playerObject, playerEntity, windowWidth)
+                            # if they are attacking
+                            elif currentEntity.currentAttack == "none":
+                                currentObject.changeState("stand")
+                            else:
+                                # continue the attack
+                                currentEntity.attack(playerObject, playerEntity, currentObject, windowWidth,
+                                                     currentEntity.currentAttack)
 
         # Wipe the screen
         window.fill(objects.white)

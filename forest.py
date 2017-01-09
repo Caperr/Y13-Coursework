@@ -13,8 +13,8 @@ def init(entities,windowWidth,windowHeight,numEnemies):
 
     # create the player graphic object as an entity
     player = entity("player", round(windowWidth / 10), round(windowHeight / 2), False, True,
-                    [["walk", 4], ["stand", 4], ["jump", 1], ["drop", 1], ["knockback", 1], ["swing", 7],
-                     ["shieldBash", 7], ["swordDash", 1],["pant", 4],["block",1]], "stand", "player", "r")
+                    [["walk", 9], ["stand", 9], ["jump", 1], ["drop", 1], ["knockback", 1], ["swing", 7],
+                     ["shieldBash", 7], ["swordDash", 1],["pant", 2],["block",1]], "stand", "player", "r")
     # assign the player's healthbar
     playerHealth = healthBar("playerHealth", playerEntity, player)
     # Assign the player's staminaBar
@@ -22,7 +22,7 @@ def init(entities,windowWidth,windowHeight,numEnemies):
     for i in range(numEnemies):
         # create the enemy1 graphic object as an entity
         sceneObjects.append(entity("enemy" + str(i + 1), round(windowWidth / 10 * 7), round(windowHeight / 2) + (2 * i), False, True,
-                        [["walk", 4], ["stand", 4], ["jump", 1], ["drop", 1], ["knockback", 1], ["swing", 7],["shieldBash", 7], ["swordDash", 1],["pant", 4]], "stand",
+                        [["walk", 8], ["stand", 6], ["jump", 1], ["drop", 1], ["knockback", 1], ["swing", 8],["shieldBash", 8], ["swordDash", 1],["pant", 4]], "stand",
                         "troll", "l"))
         # assign enemy1's healthbar
         for n in entities:

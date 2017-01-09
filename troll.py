@@ -23,22 +23,14 @@ def chunkIt(seq, num):
 def getAttack(playerAttacks,enemyEntity,playerEntity):
     attackNum = 0
     if playerAttacks[attackNum] == playerAttacks[attackNum + 1] == playerAttacks[attackNum + 2]:
-        # print("attacks", attackNum, "to", str(attackNum + 2), "are the same")
         splitPlayerAttacks = chunkIt(playerEntity.attacks, 3)
-        # print("player attacks split:", splitPlayerAttacks)
         splitEnemyAttacks = chunkIt(enemyEntity.attacks, 3)
-        # print("enemy attacks split:", splitEnemyAttacks)
         for attack in range(len(splitPlayerAttacks)):
-            # print("checking attacks region:", splitPlayerAttacks[attack])
             if playerAttacks[attackNum] in splitPlayerAttacks[attack]:
-                # print(playerAttacks[attackNum],"is in",splitPlayerAttacks[attack])
-                # print("found the attack in region", attackNum)
                 enemyEntity.currentAttackID = random.randint(0, len(splitEnemyAttacks[abs(attack - 2)]) - 1)
-                # print("set attack id to", enemyEntity.currentAttackID)
                 for enemyAttack in range(len(enemyEntity.attacks)):
                     if enemyEntity.attacks[enemyAttack] == splitEnemyAttacks[abs(attack - 2)][
                         enemyEntity.currentAttackID]:
-                        # print("found the attack at", enemyAttack, "in the enemy's attack list")
                         enemyEntity.currentAttackID = enemyAttack
                         return True
     return False
@@ -74,7 +66,7 @@ def react(enemyObject, enemyEntity, playerObject, playerEntity, windowWidth):
                     enemyEntity.currentAttackID = originalAttack
                     break
                 enemyEntity.currentAttackID -= 1
-            # enemyEntity.currentAttackID = 2
+        enemyEntity.currentAttackID = 1
 
         if enemyEntity.attackDelay > 0:
             # take one away

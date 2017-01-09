@@ -4,6 +4,6 @@ Dianne 14
 Stacey 12
 Jordan 12
 Patricia 9
+quitGame 7
 John 5
 Katy 2
-Barry 1

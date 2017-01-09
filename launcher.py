@@ -59,7 +59,7 @@ while go == "playGame":
         if score == "quitGame":
             break
         name = graphicsBackend.gameLoop("newScore",score)
-        if score == "quitGame":
+        if name == "quitGame":
             break
         f = open("leaderboard.txt","a")
         f.write(name + " " + str(score) + "\n")
