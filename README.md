@@ -5,6 +5,7 @@ TODO:
 - (!) Fix player pant; glitchy (when facing left) and too fast
 - (!) fix troll swing being above ground
 - (!) rename stuff (i.e troll to skeleton, forest to swamp, files etc.)
+- (!) make game quit when you press quit game in leaderboard
 
 - properly animate 1 frame animations e.g drop, jump, knockback..
 - add jump/drop attack
