@@ -2,6 +2,7 @@
 
 TODO:
 - (!) Fix troll swing moving backwards when facing left
+- (!) Fix player pant; glitchy (when facing left) and too fast
 - (!) fix troll swing being above ground
 - (!) rename stuff (i.e troll to skeleton, forest to swamp, files etc.)
 
