@@ -16,7 +16,6 @@ TODO:
 - split stamina bar into different colours at the points where the player has enough stamina to execute the different attacks
 - random item spawns
 -> food, potions, boosters
-- new stand and pant animations (?)
 - (?) add more enemies
 - (?) add more enemy types
 - (?) add more player types
