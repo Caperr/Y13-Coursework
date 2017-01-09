@@ -1,5 +1,4 @@
 import graphicsBackend
-# ok
 
 # This code taken from SilentGhost on stackoverflow.com
 # source: http://stackoverflow.com/questions/845058/how-to-get-line-count-cheaply-in-python
