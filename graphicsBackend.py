@@ -610,7 +610,7 @@ def gameLoop(currentScene, optional):
 
                         # enemy attack continuation and AI call
                         # if they are not the player and they are not disabled
-                        if currentObject.name != "player" and currentObject.state not in ["jump", "drop", "knockback", "pant"]:
+                        if currentObject.name[0:5] == "enemy" and currentObject.state not in ["jump", "drop", "knockback", "pant"]:
                             # if they are not attacking
                             if not currentObject.state in currentEntity.attackNames:
                                 # call their AI file
