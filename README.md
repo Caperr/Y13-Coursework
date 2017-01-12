@@ -7,6 +7,7 @@ TODO:
 - (!) rename stuff (i.e troll to skeleton, forest to swamp, files etc.)
 - (!) make game quit when you press quit game in leaderboard
 
+- stop troll from continuously walking to make space, even if it hits a wall
 - add troll appear and die animations
 - properly animate 1 frame animations e.g drop, jump, knockback..
 - add jump/drop attack
