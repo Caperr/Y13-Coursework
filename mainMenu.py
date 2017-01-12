@@ -25,6 +25,6 @@ def init(windowWidth,windowHeight):
     leaderboardText.centreText((leaderboard.x + round(leaderboard.width / 2), leaderboard.y + round(leaderboard.height / 2)))
     controlsText.centreText((controls.x + round(controls.width / 2), controls.y + round(controls.height / 2)))
     # The animated standing player
-    playerAnimation = animation("playerAnimation",round(windowWidth / 8),round(windowWidth * 2/5),False,True,"player/stand",1,4)
+    playerAnimation = animation("playerAnimation",round(windowWidth / 8),round(windowWidth * 3/10),False,True,"player/stand",1,9)
     # Return all objects
     return [newGame, quitGame,newGameText,quitGameText,playerAnimation,controls,controlsText,leaderboard,leaderboardText]
