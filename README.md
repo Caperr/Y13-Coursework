@@ -1,12 +1,13 @@
 # Y13-Coursework
 
 TODO:
-- (!) Fix troll swing moving backwards when facing left
-- (!) Fix player pant; glitchy (when facing left) and too fast
-- (!) fix troll swing being above ground
 - (!) rename stuff (i.e troll to skeleton, forest to swamp, files etc.)
 - (!) make game quit when you press quit game in leaderboard
 
+- fix glitchy player swing
+- fix glitchy troll attack anims
+- stop troll from continuously walking to make space, even if it hits a wall
+- add troll appear and die animations
 - properly animate 1 frame animations e.g drop, jump, knockback..
 - add jump/drop attack
 - new hit detection, using two text files per frame:
@@ -27,3 +28,4 @@ TODO:
 - display level above troll
 - Randomly choose whether to block a player attack or not
 - Add difficulty setting -> e.g increase base troll difficulty, FPS, number of trolls, number of kills per troll kill
+- store separate leaderboards for each difficulty
