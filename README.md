@@ -4,6 +4,7 @@ TODO:
 - (!) rename stuff (i.e troll to skeleton, forest to swamp, files etc.)
 - (!) make game quit when you press quit game in leaderboard
 
+- move block into knight entity class, in case some future player classes cant block (e.g mage)
 - downscale troll healthBar text
 - fix glitchy player swing
 - fix glitchy troll attack anims
