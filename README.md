@@ -28,3 +28,4 @@ TODO:
 - display level above troll
 - Randomly choose whether to block a player attack or not
 - Add difficulty setting -> e.g increase base troll difficulty, FPS, number of trolls, number of kills per troll kill
+- store separate leaderboards for each difficulty
