@@ -4,6 +4,7 @@ TODO:
 - (!) rename stuff (i.e troll to skeleton, forest to swamp, files etc.)
 - (!) make game quit when you press quit game in leaderboard
 
+- downscale troll healthBar text
 - fix glitchy player swing
 - fix glitchy troll attack anims
 - stop troll from continuously walking to make space, even if it hits a wall
