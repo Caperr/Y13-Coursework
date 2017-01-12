@@ -66,7 +66,7 @@ def react(enemyObject, enemyEntity, playerObject, playerEntity, windowWidth):
                     enemyEntity.currentAttackID = originalAttack
                     break
                 enemyEntity.currentAttackID -= 1
-        enemyEntity.currentAttackID = 1
+        # enemyEntity.currentAttackID = 2
 
         if enemyEntity.attackDelay > 0:
             # take one away

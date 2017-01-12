@@ -615,9 +615,10 @@ def gameLoop(currentScene, optional):
                             if not currentObject.state in currentEntity.attackNames:
                                 # call their AI file
                                 troll.react(currentObject, currentEntity, playerObject, playerEntity, windowWidth)
-                            # if they are attacking
+                            # if they just finished attacking, revert to standing
                             elif currentEntity.currentAttack == "none":
                                 currentObject.changeState("stand")
+                            # if they are attacking
                             else:
                                 # continue the attack
                                 currentEntity.attack(playerObject, playerEntity, currentObject, windowWidth,

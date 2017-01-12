@@ -120,6 +120,9 @@ class knight(classes):
         else:
             # load the current frame
             playerImage = pygame.image.load("graphics/player/swing/" + str(playerObject.current) + ".PNG")
+            if playerObject.face == "l":
+                # Move the player back to compensate for the extending image
+                playerObject.x = self.startX - (playerImage.get_width() - self.startWidth)
             # check through all enemies for hits
             for enemyObject in enemyObjects:
                 # The attack has not landed a hit on this enemy this frame
@@ -137,8 +140,6 @@ class knight(classes):
                                 # if an intersection is found, the enemy was hit on this frame
                                 if not (enemyObject.state == "block" and enemyObject.face != playerObject.face):
                                     hit = 1
-                            # Move the player back to compensate for the extending image
-                            playerObject.x = self.startX - (playerImage.get_width() - self.startWidth)
                         # if the player is facing right
                         else:
                             # check for intersections
@@ -189,6 +190,9 @@ class knight(classes):
         # if it's not the first frame
         else:
             playerImage = pygame.image.load("graphics/player/shieldBash/" + str(playerObject.current) + ".PNG")
+            if playerObject.face == "l":
+                # Move the player back to compensate for the extending image
+                playerObject.x = self.startX - (playerImage.get_width() - self.startWidth)
             # scan through all enemies
             for enemyObject in enemyObjects:
                 # the attack has not hit the enemy this frame
@@ -207,8 +211,6 @@ class knight(classes):
                                 # if an intersection is found, the enemy was hit
                                 if not (enemyObject.state == "block" and enemyObject.face != playerObject.face):
                                     hit = 1
-                            # move the player back to compensate for width gain
-                            playerObject.x = self.startX - (playerImage.get_width() - self.startWidth)
                         # if the player is facing right
                         else:
                             # scan for intersections
@@ -585,7 +587,7 @@ class troll(enemy):
                 enemyObject.changeState("stand")
 
     # list of all attacks AND the range in which the enemy will ATTEMPT them - not necessarily hit.
-    attacks = [[shieldBash, 0, round(windowWidth * 5/12)],[swing, round(windowWidth * 10/24), round(windowWidth * 13 / 24)],[swordDash, round(windowWidth / 4), round(windowWidth * 3/5)]]
+    attacks = [[shieldBash, 0, round(windowWidth /4)],[swing, round(windowWidth * 6/24), round(windowWidth * 10 / 24)],[swordDash, round(windowWidth / 2), round(windowWidth * 3/5)]]
     # list of all of the attack names
     attackNames = ["shieldBash","swing","swordDash"]
 
