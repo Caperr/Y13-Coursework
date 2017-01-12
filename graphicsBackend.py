@@ -443,6 +443,8 @@ def gameLoop(currentScene, optional):
                                 gameQuit = True
                             # if an enemy was defeated, add it to the players kill count
                             if currentObject.name[0:5] == "enemy":
+                                # reset their current attack tracker
+                                currentEntity.currentAttackID = None
                                 playerEntity.kills += 1
                                 position = 0
                                 distance = 0
@@ -529,6 +531,9 @@ def gameLoop(currentScene, optional):
 
                         # if the entity is being knocked back
                         if currentObject.state == "knockback":
+                            # Reset the enemy's attack
+                            if currentObject.name[0:5] == "enemy":
+                                currentEntity.currentAttackID = None
                             # keep them facing the right way
                             currentObject.face = currentObject.knockbackFace
                             # if the entity is below half way through the knockback sequence
@@ -618,8 +623,10 @@ def gameLoop(currentScene, optional):
                             # if they just finished attacking, revert to standing
                             elif currentEntity.currentAttack == "none":
                                 currentObject.changeState("stand")
+                                currentEntity.currentAttackID = None
                             # if they are attacking
                             else:
+                                currentEntity.currentAttackID = None
                                 # continue the attack
                                 currentEntity.attack(playerObject, playerEntity, currentObject, windowWidth,
                                                      currentEntity.currentAttack)
