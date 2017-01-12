@@ -1,11 +1,10 @@
 # Y13-Coursework
 
 TODO:
-- (!) Fix player pant; glitchy (when facing left) and too fast
-- (!) fix troll swing being above ground
 - (!) rename stuff (i.e troll to skeleton, forest to swamp, files etc.)
 - (!) make game quit when you press quit game in leaderboard
 
+- fix glitchy player swing
 - fix glitchy troll attack anims
 - stop troll from continuously walking to make space, even if it hits a wall
 - add troll appear and die animations
