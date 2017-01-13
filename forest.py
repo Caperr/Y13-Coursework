@@ -3,7 +3,6 @@ from objects import *
 # used to store and transfer all objects to be loaded
 sceneObjects = []
 
-
 def init(entities,windowWidth,windowHeight,numEnemies):
     sceneObjects = []
     # find the player and enemy game objects, these are needed for assigning health bars

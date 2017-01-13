@@ -3,7 +3,7 @@ from objects import *
 # the list of all of the objects in the scene
 sceneObjects = []
 
-# initialize graphical objects based on window size
+# initialize graphic objects based on window size
 def init(windowWidth,windowHeight):
     # the button for a new game. It is clickable
     newGame = rectangle("newGame", round(windowWidth / 2), round(windowHeight / 4), True, True, round(windowWidth / 4), round(windowHeight / 4), red)
