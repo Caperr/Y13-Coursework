@@ -1,4 +1,13 @@
 # Y13-Coursework
+My non-exam assessment for A' level computer science; a simple 2D fighter game demonstrating object oriented and modular programming techniques as well as text file management.
+
+Built on pygame. Pygame is a third party library that is required to be installed for this game to run.
+
+
+
+
+
+
 
 TODO:
 - (!) rename stuff (i.e troll to skeleton, forest to swamp, files etc.)
